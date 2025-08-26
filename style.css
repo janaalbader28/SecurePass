@@ -90,10 +90,30 @@ h1{font-size:40px; line-height:1.15; margin:0 0 10px; letter-spacing:-0.02em}
   position:absolute; top:4px; right:4px; bottom:4px;
   display:flex; align-items:center; gap:6px; pointer-events:none;
 }
-.icon-btn{
-  pointer-events:auto; width:36px; height:36px; border-radius:10px; border:1px solid var(--border);
-  background:var(--card); display:grid; place-items:center; cursor:pointer;
+.icon-btn {
+  pointer-events:auto;
+  width:36px;
+  height:36px;
+  border:none;            
+  outline:none;            
+  border-radius:10px;
+  background:transparent; 
+  display:grid;
+  place-items:center;
+  cursor:pointer;
 }
+.icon-btn svg {
+  width:20px;
+  height:20px;
+  color:var(--muted);
+}
+.icon-btn:hover svg {
+  color:var(--brand);
+}
+.icon-btn:focus {
+  outline:none;            
+}
+
 .icon-btn.copied{ background:#d1fae5; }
 
 /* ===== METER ===== */
