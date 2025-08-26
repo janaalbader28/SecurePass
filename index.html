@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SecurePass · Create Stronger Passwords</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="brand">
+        <span class="badge" aria-hidden="true">${shield()}</span>
+        <span>SecurePass</span>
+      </div>
+      <button class="settings" aria-label="Settings">${gear()}</button>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="logo-bubble">${shield()}</div>
+      <h1>Create Stronger Passwords</h1>
+      <p class="sub">Test your password strength, generate secure passwords, and learn cybersecurity best practices to protect your digital life.</p>
+    </section>
+
+    <!-- Strength Checker Card -->
+    <section class="card headerlike">
+      <div class="card-title">
+        <span class="tiny-badge">${shield()}</span>
+        <span>Password Strength Checker</span>
+      </div>
+      <p class="muted" style="margin:6px 0 0">Create secure passwords and learn cybersecurity best practices</p>
+
+      <div class="label">Enter your password</div>
+      <div class="input-row">
+        <div class="input-wrap">
+          <input type="text" placeholder="Type your password here..." aria-label="Password input" />
+          <div class="affix" aria-hidden="true">
+            <div class="icon-btn" title="Copy">${copy()}</div>
+            <div class="icon-btn" title="Reveal">${eye()}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bar-row">
+        <div class="bar"><span style="width:12%"></span></div>
+        <div class="pill"><span style="display:inline-block;width:6px;height:6px;border-radius:999px;background:var(--red)"></span> Weak</div>
+      </div>
+      <div class="score">Score: 0/100</div>
+
+      <div class="grid">
+        <div class="li ok">
+          <div class="dot">${check()}</div>
+          <div>
+            <strong>Strengths:</strong><br>
+            Enter a password to check its strength
+          </div>
+        </div>
+        <div class="li warn">
+          <div class="dot">${warn()}</div>
+          <div>
+            <strong>Improvements:</strong><br>
+            Start typing to see strength analysis
+          </div>
+        </div>
+      </div>
+
+      <div class="cta-row">
+        <div class="muted">Need a Strong Password?</div>
+        <button class="btn">${keyIcon()} Generate</button>
+      </div>
+    </section>
+
+    <!-- Tips -->
+    <section class="card tips">
+      <div class="sec-title">
+        <span class="shield">${shield()}</span>
+        <span>Cybersecurity Tips</span>
+      </div>
+
+      <div class="tip-card">
+        <div class="tip-icon">${lockIcon()}</div>
+        <div>
+          <div class="tip-title">Account Monitoring</div>
+          <div class="muted" style="margin-top:4px">Regularly check your accounts for suspicious activity and enable security alerts when available.</div>
+        </div>
+      </div>
+
+      <div class="progress">
+        <div>Tip 8 of 8</div>
+        <div>Auto-rotating</div>
+        <div class="progressbar"><span></span></div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div>Built to help you stay secure online</div>
+      <div class="mini">${lockIcon()} Your passwords are processed locally - nothing is sent to our servers</div>
+    </footer>
+  </div>
+
+  <!-- Tiny inline SVG helpers rendered via template literals replaced below -->
+  <script>
+    // Replace ${fn()} placeholders with actual SVG markup on load
+    const icons = {
+      shield: `
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M12 3l7 3v6.2c0 4.1-2.9 7.9-7 8.8-4.1-1-7-4.7-7-8.8V6l7-3z" stroke="currentColor" stroke-width="1.6" fill="none"/>
+          <path d="M9.5 12.2l2.1 2.1 4-4.1" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>` ,
+      gear: `
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M19.4 12a7.4 7.4 0 0 0 .05-.9l2.05-1.6-1.2-2.1-2.55.2a7.7 7.7 0 0 0-1.55-.9l-.6-2.5h-2.4l-.6 2.5c-.53.2-1.04.47-1.54.8L6.7 5.4 5.5 7.6l2.1 1.6c-.03.36-.05.73-.05 1.1 0 .3.02.6.06.9L5.5 12.8l1.2 2.2 2.5-.3c.47.37.98.67 1.53.9l.6 2.5h2.4l.6-2.5c.53-.2 1.04-.48 1.52-.82l2.6.24 1.2-2.12-2.14-1.6c.04-.3.06-.63.06-.96z" stroke="currentColor" stroke-width="1.2" fill="none"/>
+        </svg>` ,
+      copy: `
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="8" y="8" width="10" height="12" rx="2" stroke="currentColor" stroke-width="1.6"/>
+          <rect x="4" y="4" width="10" height="12" rx="2" stroke="currentColor" stroke-width="1.6" opacity=".5"/>
+        </svg>` ,
+      eye: `
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6z" stroke="currentColor" stroke-width="1.6" fill="none"/>
+          <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/>
+        </svg>` ,
+      check: `
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>` ,
+      warn: `
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M12 3l9 16H3l9-16z" stroke="currentColor" stroke-width="1.6" fill="none"/>
+          <path d="M12 9v5m0 3h.01" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>` ,
+      key: `
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <circle cx="8.5" cy="12.5" r="3.5" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M12 12.5h8M17 12.5v3m3-3v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>` ,
+      lock: `
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="4" y="10" width="16" height="10" rx="3" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M8 10V8a4 4 0 1 1 8 0v2" stroke="currentColor" stroke-width="1.6"/>
+        </svg>`
+    };
+    function replaceTokens(){
+      document.body.innerHTML = document.body.innerHTML
+        .replaceAll('${shield()}', icons.shield)
+        .replaceAll('${gear()}', icons.gear)
+        .replaceAll('${copy()}', icons.copy)
+        .replaceAll('${eye()}', icons.eye)
+        .replaceAll('${check()}', icons.check)
+        .replaceAll('${warn()}', icons.warn)
+        .replaceAll('${keyIcon()}', icons.key)
+        .replaceAll('${lockIcon()}', icons.lock);
+    }
+    // simple helpers to survive HTML parser before replacement
+    function shield(){} function gear(){} function copy(){} function eye(){} function check(){} function warn(){} function keyIcon(){} function lockIcon(){}
+    replaceTokens();
+  </script>
+</body>
+</html>
