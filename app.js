@@ -31,7 +31,6 @@ function replaceTokens(){
     .replaceAll('${keyIcon()}', icons.key)
     .replaceAll('${lockIcon()}', icons.lock);
 }
-
 /* Dummies so placeholders exist pre-replacement */
 function shield(){} function sun(){} function moon(){} function copy(){} function eye(){} function eyeOff(){} function check(){} function warn(){} function keyIcon(){} function lockIcon(){}
 
@@ -79,7 +78,96 @@ document.addEventListener("click", (e) => {
   }
 });
 
-/* Tips: 8 cards, auto-rotate with per-tip icon */
+/* ---------------- Simple Strength Rules ----------------
+   Required:
+   - ≥ 8 characters
+   - ≥ 1 uppercase letter
+   - ≥ 1 number
+   - ≥ 1 special character (non-alphanumeric)
+---------------------------------------------------------*/
+const rules = [
+  {
+    id: 'len',
+    label: 'At least 8 characters',
+    improve: 'Use 8 or more characters',
+    test: (s) => s.length >= 8
+  },
+  {
+    id: 'upper',
+    label: 'Contains an uppercase letter',
+    improve: 'Add at least one uppercase letter (A–Z)',
+    test: (s) => /[A-Z]/.test(s)
+  },
+  {
+    id: 'num',
+    label: 'Contains a number',
+    improve: 'Add at least one number (0–9)',
+    test: (s) => /[0-9]/.test(s)
+  },
+  {
+    id: 'special',
+    label: 'Contains a special character',
+    improve: 'Add a special character (e.g. !@#$%^&*)',
+    test: (s) => /[^A-Za-z0-9]/.test(s)
+  }
+];
+
+const meterFill  = () => document.getElementById('meterFill');
+const meterLabel = () => document.getElementById('meterLabel');
+const scoreEl    = () => document.getElementById('score');
+const strengthUL = () => document.querySelector('.points-list.ok');
+const improveUL  = () => document.querySelector('.points-list.warn');
+
+/* Build list items with the correct icon color (green = ok, orange = warn) */
+function liHTMLOK(text){
+  return `<li><span class="li-icon" style="color:var(--green)">${icons.check}</span>${text}</li>`;
+}
+function liHTMLWarn(text){
+  return `<li><span class="li-icon" style="color:var(--orange)">${icons.warn}</span>${text}</li>`;
+}
+
+/* Evaluate password and update UI */
+function evaluatePassword(pwd){
+  const results = rules.map(r => ({ id: r.id, ok: r.test(pwd), label: r.label, improve: r.improve }));
+
+  // Score = percentage of rules satisfied
+  const passed = results.filter(r => r.ok).length;
+  const pct = Math.round((passed / rules.length) * 100);
+
+  // Meter width
+  if (meterFill()) meterFill().style.width = `${pct}%`;
+
+  // Label
+  let label = 'Weak';
+  if (passed === 2) label = 'Fair';
+  if (passed === 3) label = 'Good';
+  if (passed === 4) label = 'Strong';
+  if (meterLabel()) meterLabel().textContent = label;
+
+  // Score
+  if (scoreEl()) scoreEl().textContent = String(pct);
+
+  // Strengths list = satisfied rules
+  if (strengthUL()){
+    const okItems = results.filter(r => r.ok).map(r => liHTMLOK(r.label));
+    strengthUL().innerHTML = okItems.length ? okItems.join('') : liHTMLOK('Start typing to see strengths');
+  }
+
+  // Improvements list = failed rules
+  if (improveUL()){
+    const needItems = results.filter(r => !r.ok).map(r => liHTMLWarn(r.improve));
+    improveUL().innerHTML = needItems.length ? needItems.join('') : liHTMLOK('All core rules satisfied 🎉');
+  }
+}
+
+/* Listen to input */
+document.addEventListener('input', (e)=>{
+  if (e.target && e.target.id === 'pwd'){
+    evaluatePassword(e.target.value || '');
+  }
+});
+
+/* ---------------- Tips: 8 cards, auto-rotate with per-tip icon ---------------- */
 const tips = [
   {title:"Unique Passwords",         type:"PASSWORD SECURITY", icon:"lock",    desc:"Avoid using the same password across multiple accounts. Each account should have its own unique, strong password."},
   {title:"Two-Factor Authentication",type:"ACCOUNT SECURITY",  icon:"shield",  desc:"Turn on two-factor authentication (2FA) whenever possible. It adds an extra layer of security to your accounts."},
@@ -96,6 +184,7 @@ let tipIndex = 0, tipTimer, progress = 0, progressEl;
 function iconHTML(name){ return icons[name] || icons.lock; }
 function renderDots(){
   const dots = document.getElementById('tipDots');
+  if (!dots) return;
   dots.innerHTML = tips.map((_,i)=>`<span class="dot ${i===0?'active':''}"></span>`).join('');
 }
 function setActiveDot(i){
@@ -104,22 +193,27 @@ function setActiveDot(i){
 }
 function showTip(i){
   const t = tips[i];
-  document.getElementById('tipIcon').innerHTML = iconHTML(t.icon);
-  document.getElementById('tipTitle').textContent = t.title;
-  document.getElementById('tipType').textContent  = t.type;
-  document.getElementById('tipDesc').textContent  = t.desc;
-  document.getElementById('tipCounter').textContent = `Tip ${i+1} of ${tips.length}`;
+  const ic = document.getElementById('tipIcon');
+  const ti = document.getElementById('tipTitle');
+  const ty = document.getElementById('tipType');
+  const de = document.getElementById('tipDesc');
+  const ct = document.getElementById('tipCounter');
+  if (ic) ic.innerHTML = iconHTML(t.icon);
+  if (ti) ti.textContent = t.title;
+  if (ty) ty.textContent = t.type;
+  if (de) de.textContent = t.desc;
+  if (ct) ct.textContent = `Tip ${i+1} of ${tips.length}`;
   setActiveDot(i);
   progress = 0;
   if (!progressEl) progressEl = document.getElementById('tipProgress');
-  progressEl.style.width = '0%';
+  if (progressEl) progressEl.style.width = '0%';
 }
 function startRotation(){
   clearInterval(tipTimer);
   tipTimer = setInterval(()=>{
     progress += 5;               // ~4s per tip
     if (!progressEl) progressEl = document.getElementById('tipProgress');
-    progressEl.style.width = Math.min(progress,100) + '%';
+    if (progressEl) progressEl.style.width = Math.min(progress,100) + '%';
     if (progress >= 100){
       tipIndex = (tipIndex + 1) % tips.length;
       showTip(tipIndex);
@@ -133,10 +227,14 @@ applyStoredTheme();
 renderDots();
 showTip(tipIndex);
 startRotation();
+evaluatePassword(''); // initialize empty state
 
 /* Allow clicking dots to jump */
-document.getElementById('tipDots').addEventListener('click', e=>{
-  const nodes = Array.from(document.querySelectorAll('#tipDots .dot'));
-  const i = nodes.indexOf(e.target);
-  if (i >= 0){ tipIndex = i; showTip(i); }
-});
+const tipDotsEl = document.getElementById('tipDots');
+if (tipDotsEl){
+  tipDotsEl.addEventListener('click', e=>{
+    const nodes = Array.from(document.querySelectorAll('#tipDots .dot'));
+    const i = nodes.indexOf(e.target);
+    if (i >= 0){ tipIndex = i; showTip(i); }
+  });
+}
