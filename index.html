@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>SecurePass · Create Stronger Passwords</title>
+  <title data-en="SecurePass · Create Stronger Passwords" data-ar="SecurePass · إنشاء كلمات مرور أقوى">SecurePass · Create Stronger Passwords</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -12,24 +12,33 @@
 <body>
 
   <!--HEADER -->
-  <header class="header">
-    <div class="header-inner">
-      <div class="brand">
-        <span class="badge" aria-hidden="true">${shield()}</span>
-        <span>SecurePass</span>
-      </div>
+<header class="header">
+  <div class="header-inner">
+    <div class="brand">
+      <span class="badge" aria-hidden="true">${shield()}</span>
+      <span data-en="SecurePass" data-ar=" SecurePass">SecurePass</span>
+    </div>
+
+    <!-- actions on the right -->
+    <div class="header-actions">
+      <button class="icon-btn" data-action="lang">
+        <svg viewBox="0 0 24 24"><path d="M12 2L15 8H9L12 2Z"/></svg>
+        العربيه
+      </button>
       <button class="mode-toggle" aria-label="Toggle theme">${sun()}</button>
     </div>
-  </header>
+  </div>
+</header>
+
 
   <main class="container">
     <!-- Hero -->
     <section class="hero">
       <div class="logo-bubble">${shield()}</div>
-      <h1>Create Stronger Passwords</h1>
-      <p class="sub">
-        Test your password strength, generate secure passwords, and learn cybersecurity best practices
-        to protect your digital life.
+      <h1 data-en="Create Stronger Passwords" data-ar="إنشاء كلمات مرور أقوى">Create Stronger Passwords</h1>
+      <p class="sub" data-en="Test your password strength, generate secure passwords, and learn cybersecurity best practices to protect your digital life." 
+         data-ar="اختبر قوة كلمة مرورك، وأنشئ كلمات مرور قوية، وتعلم أفضل ممارسات الأمن السيبراني لحماية حياتك الرقمية.">
+        Test your password strength, generate secure passwords, and learn cybersecurity best practices to protect your digital life.
       </p>
     </section>
 
@@ -37,15 +46,15 @@
     <section class="card headerlike">
       <div class="card-title">
         <span class="tiny-badge">${shield()}</span>
-        <h2 class="checker-heading">Password Strength Checker</h2>
+        <h2 class="checker-heading" data-en="Password Strength Checker" data-ar="فاحص قوة كلمة المرور">Password Strength Checker</h2>
       </div>
-      <p class="muted card-sub">Create secure passwords and learn cybersecurity best practices</p>
+      <p class="muted card-sub" data-en="Create secure passwords and learn cybersecurity best practices" data-ar="أنشئ كلمات مرور قوية وتعلم أفضل ممارسات الأمن السيبراني">Create secure passwords and learn cybersecurity best practices</p>
 
       <!-- Password field -->
-      <div class="label">Enter your password</div>
+      <div class="label" data-en="Enter your password" data-ar="ادخل كلمة المرور">Enter your password</div>
       <div class="input-row">
         <div class="input-wrap">
-          <input id="pwd" type="password" placeholder="Type your password here..." aria-label="Password input" />
+          <input id="pwd" type="password" placeholder="" data-en="Type your password here..." data-ar="اكتب كلمة المرور هنا..." aria-label="Password input" />
           <div class="affix">
             <button class="icon-btn" type="button" data-action="copy" aria-label="Copy password">${copy()}</button>
             <button class="icon-btn" type="button" data-action="toggle" aria-label="Show password">${eye()}</button>
@@ -58,31 +67,31 @@
         <div class="bar"><span id="meterFill" style="width:12%"></span></div>
         <div class="pill">
           <span style="display:inline-block;width:6px;height:6px;border-radius:999px;background:var(--red)"></span>
-          <span id="meterLabel">Weak</span>
+          <span id="meterLabel" data-en="Weak" data-ar="ضعيف">Weak</span>
         </div>
       </div>
-      <div class="score">Score: <span id="score">0</span>/100</div>
+      <div class="score" data-en="Score:" data-ar="النقاط:">Score: <span id="score">0</span>/100</div>
 
       <!-- Points -->
       <div class="points">
-        <h3 class="points-title ok"><span class="dot">${check()}</span>Strengths:</h3>
+        <h3 class="points-title ok"><span class="dot">${check()}</span><span data-en="Strengths:" data-ar="نقاط القوة:">Strengths:</span></h3>
         <ul class="points-list ok">
-          <li><span class="li-icon">${check()}</span>Enter a password to check its strength</li>
-          <li><span class="li-icon">${check()}</span>Use at least 12 characters</li>
-          <li><span class="li-icon">${check()}</span>Include letters, numbers, and symbols</li>
+          <li><span class="li-icon">${check()}</span><span data-en="Enter a password to check its strength" data-ar="ادخل كلمة المرور لاختبار قوتها">Enter a password to check its strength</span></li>
+          <li><span class="li-icon">${check()}</span><span data-en="Use at least 12 characters" data-ar="استخدم 12 حرفًا على الأقل">Use at least 12 characters</span></li>
+          <li><span class="li-icon">${check()}</span><span data-en="Include letters, numbers, and symbols" data-ar="أضف أحرفًا وأرقامًا ورموزًا">Include letters, numbers, and symbols</span></li>
         </ul>
 
-        <h3 class="points-title warn"><span class="dot">${warn()}</span>Improvements:</h3>
+        <h3 class="points-title warn"><span class="dot">${warn()}</span><span data-en="Improvements:" data-ar="نقاط التحسين:">Improvements:</span></h3>
         <ul class="points-list warn">
-          <li><span class="li-icon">${warn()}</span>Start typing to see strength analysis</li>
-          <li><span class="li-icon">${warn()}</span>Avoid common words and keyboard patterns</li>
-          <li><span class="li-icon">${warn()}</span>Don’t reuse passwords across accounts</li>
+          <li><span class="li-icon">${warn()}</span><span data-en="Start typing to see strength analysis" data-ar="ابدأ الكتابة لرؤية تحليل القوة">Start typing to see strength analysis</span></li>
+          <li><span class="li-icon">${warn()}</span><span data-en="Avoid common words and keyboard patterns" data-ar="تجنب الكلمات الشائعة وأنماط لوحة المفاتيح">Avoid common words and keyboard patterns</span></li>
+          <li><span class="li-icon">${warn()}</span><span data-en="Don’t reuse passwords across accounts" data-ar="لا تعيد استخدام كلمات المرور عبر الحسابات">Don’t reuse passwords across accounts</span></li>
         </ul>
       </div>
 
       <div class="cta-row">
-        <div class="muted">Need a Strong Password?</div>
-        <button class="btn">${keyIcon()} Generate</button>
+        <div class="muted" data-en="Need a Strong Password?" data-ar="تحتاج كلمة مرور قوية؟">Need a Strong Password?</div>
+        <button class="btn" data-en="Generate" data-ar="إنشاء">${keyIcon()} Generate</button>
       </div>
     </section>
 
@@ -90,36 +99,57 @@
     <section class="card tips" id="tipsCard">
       <div class="sec-title">
         <span class="shield">${shield()}</span>
-        <span>Cybersecurity Tips</span>
+        <span data-en="Cybersecurity Tips" data-ar="نصائح الأمن السيبراني">Cybersecurity Tips</span>
       </div>
 
-      <!-- grid so desc is on new line -->
       <div class="tip-card tip-grid">
         <div class="tip-icon" id="tipIcon">${lockIcon()}</div>
         <div class="tip-head">
-          <div class="tip-title" id="tipTitle">Unique Passwords</div>
-          <div class="tip-type" id="tipType">PASSWORD SECURITY</div>
+          <div class="tip-title" id="tipTitle" data-en="Unique Passwords" data-ar="كلمات مرور فريدة">Unique Passwords</div>
+          <div class="tip-type" id="tipType" data-en="PASSWORD SECURITY" data-ar="أمن كلمة المرور">PASSWORD SECURITY</div>
         </div>
-        <div class="tip-desc muted" id="tipDesc">
+        <div class="tip-desc muted" id="tipDesc" data-en="Avoid using the same password across multiple accounts. Each account should have its own unique, strong password."
+             data-ar="تجنب استخدام نفس كلمة المرور في حسابات متعددة. يجب أن يكون لكل حساب كلمة مرور قوية وفريدة.">
           Avoid using the same password across multiple accounts. Each account should have its own unique, strong password.
         </div>
       </div>
+        <div class="tips-navigation">
+    <!-- <button id="prevTip" aria-label="Previous Tip">◀</button>
+    <button id="nextTip" aria-label="Next Tip">▶</button> -->
+  </div>
 
-      <div class="progress">
-        <div id="tipCounter">Tip 1 of 8</div>
-        <div>Auto-rotating</div>
-        <div class="progressbar"><span id="tipProgress"></span></div>
-        <div class="tip-dots" id="tipDots" aria-hidden="true"></div>
-      </div>
-    </section>
+
+ <div class="progress">
+  <!-- العداد اللي يبين رقم النصيحة -->
+  <div id="tipCounter" data-en="Tip 1 of 8" data-ar="النصيحة 1 من 8">
+    Tip 1 of 8
+  </div>
+
+  <!-- نص صغير يوضح إن النصائح تتغير تلقائي -->
+  <div data-en="Auto-rotating" data-ar="تدوير تلقائي">
+    Auto-rotating
+  </div>
+
+  <!-- شريط التقدم -->
+  <div class="progressbar">
+    <span id="tipProgress"></span>
+  </div>
+
+  <!-- النقاط الصغيرة اللي تبين أي نصيحة مفعلة -->
+  <div class="tip-dots" id="tipDots" aria-hidden="true"></div>
+</div>
+
 
     <!-- Footer -->
     <footer class="footer">
-      <div>Built to help you stay secure online</div>
-      <div class="mini">${lockIcon()} Your passwords are processed locally - nothing is sent to our servers</div>
+      <div data-en="Built to help you stay secure online" data-ar="تم إنشاؤه لمساعدتك على البقاء آمنًا على الإنترنت">Built to help you stay secure online</div>
+      <div class="mini" data-en="Your passwords are processed locally - nothing is sent to our servers" data-ar="يتم معالجة كلمات المرور محليًا - لا يتم إرسال أي شيء إلى خوادمنا">
+        ${lockIcon()} Your passwords are processed locally - nothing is sent to our servers
+      </div>
     </footer>
   </main>
 
   <script src="app.js"></script>
+  <script src="lang.js"></script>
 </body>
 </html>
