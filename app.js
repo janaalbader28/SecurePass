@@ -31,10 +31,8 @@ function replaceTokens(){
     .replaceAll('${keyIcon()}', icons.key)
     .replaceAll('${lockIcon()}', icons.lock);
 }
-/* Dummies so placeholders exist pre-replacement */
-function shield(){} function sun(){} function moon(){} function copy(){} function eye(){} function eyeOff(){} function check(){} function warn(){} function keyIcon(){} function lockIcon(){}
 
-/* Theme toggle */
+/* ================= Theme toggle ================= */
 function applyStoredTheme(){
   const stored = localStorage.getItem('theme');
   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -43,6 +41,7 @@ function applyStoredTheme(){
   const btn = document.querySelector('.mode-toggle');
   if (btn) btn.innerHTML = theme === 'dark' ? icons.moon : icons.sun;
 }
+
 document.addEventListener('click', (e)=>{
   const btn = e.target.closest('.mode-toggle');
   if(!btn) return;
@@ -53,63 +52,70 @@ document.addEventListener('click', (e)=>{
   btn.innerHTML = next === 'dark' ? icons.moon : icons.sun;
 });
 
-/* Password: copy + show/hide */
+/* ================= Password, copy, toggle, language ================= */
 document.addEventListener("click", (e) => {
   const btn = e.target.closest(".icon-btn");
   if (!btn) return;
 
   const input = document.querySelector("#pwd");
-  if (!input) return;
-
   const action = btn.dataset.action;
 
   if (action === "copy") {
-    navigator.clipboard.writeText(input.value || "").then(() => {
+    navigator.clipboard.writeText(input?.value || "").then(() => {
       btn.classList.add("copied");
       setTimeout(() => btn.classList.remove("copied"), 250);
     });
   }
 
-  if (action === "toggle") {
+  if (action === "toggle" && input) {
     const show = input.type === "password";
     input.type = show ? "text" : "password";
     btn.setAttribute("aria-label", show ? "Hide password" : "Show password");
     btn.innerHTML = show ? (icons.eyeOff || icons.eye) : icons.eye;
   }
+
+  if (action === "lang") {
+    const body = document.body;
+    let lang;
+    if (body.dir === "rtl") {
+      body.dir = "ltr";
+      btn.textContent = "العربية";
+      lang = "en";
+    } else {
+      body.dir = "rtl";
+      btn.textContent = "English";
+      lang = "ar";
+    }
+
+    // swap all texts
+    document.querySelectorAll("[data-en][data-ar]").forEach(el => {
+      el.textContent = el.dataset[lang];
+    });
+
+    // swap placeholders
+    document.querySelectorAll("input[data-en][data-ar]").forEach(inp => {
+      inp.placeholder = inp.dataset[lang];
+    });
+
+    // also reset strength UI wording according to language if empty
+    const pwdVal = document.querySelector('#pwd')?.value || '';
+    if (!pwdVal) resetStrengthUI();
+  }
 });
 
-/* ---------------- Simple Strength Rules ----------------
-   Required:
-   - ≥ 8 characters
-   - ≥ 1 uppercase letter
-   - ≥ 1 number
-   - ≥ 1 special character (non-alphanumeric)
----------------------------------------------------------*/
-const rules = [
-  {
-    id: 'len',
-    label: 'At least 8 characters',
-    improve: 'Use 8 or more characters',
-    test: (s) => s.length >= 8
-  },
-  {
-    id: 'upper',
-    label: 'Contains an uppercase letter',
-    improve: 'Add at least one uppercase letter (A–Z)',
-    test: (s) => /[A-Z]/.test(s)
-  },
-  {
-    id: 'num',
-    label: 'Contains a number',
-    improve: 'Add at least one number (0–9)',
-    test: (s) => /[0-9]/.test(s)
-  },
-  {
-    id: 'special',
-    label: 'Contains a special character',
-    improve: 'Add a special character (e.g. !@#$%^&*)',
-    test: (s) => /[^A-Za-z0-9]/.test(s)
+/* Evaluate while typing */
+document.addEventListener('input', (e) => {
+  if (e.target.id === 'pwd') {
+    evaluatePassword(e.target.value);
   }
+});
+
+/* ================= Strength rules & helpers ================= */
+const rules = [
+  { id: 'len', label: 'At least 8 characters', improve: 'Use 8 or more characters', test: (s) => s.length >= 8 },
+  { id: 'upper', label: 'Contains an uppercase letter', improve: 'Add at least one uppercase letter (A–Z)', test: (s) => /[A-Z]/.test(s) },
+  { id: 'num', label: 'Contains a number', improve: 'Add at least one number (0–9)', test: (s) => /[0-9]/.test(s) },
+  { id: 'special', label: 'Contains a special character', improve: 'Add a special character (e.g. !@#$%^&*)', test: (s) => /[^A-Za-z0-9]/.test(s) }
 ];
 
 const meterFill  = () => document.getElementById('meterFill');
@@ -118,123 +124,288 @@ const scoreEl    = () => document.getElementById('score');
 const strengthUL = () => document.querySelector('.points-list.ok');
 const improveUL  = () => document.querySelector('.points-list.warn');
 
-/* Build list items with the correct icon color (green = ok, orange = warn) */
-function liHTMLOK(text){
-  return `<li><span class="li-icon" style="color:var(--green)">${icons.check}</span>${text}</li>`;
-}
-function liHTMLWarn(text){
-  return `<li><span class="li-icon" style="color:var(--orange)">${icons.warn}</span>${text}</li>`;
+function liHTMLOK(text){ return `<li><span class="li-icon" style="color:var(--green)">${icons.check}</span>${text}</li>`; }
+function liHTMLWarn(text){ return `<li><span class="li-icon" style="color:var(--orange)">${icons.warn}</span>${text}</li>`; }
+
+function setMeterClasses(level){
+  const fill = meterFill();
+  const pillEl = meterLabel()?.parentElement; // .pill
+  if(!fill || !pillEl) return;
+
+  fill.classList.remove('meter--weak','meter--fair','meter--good','meter--strong');
+  pillEl.classList.remove('pill--weak','pill--fair','pill--strong');
+
+  if(level === 'weak'){ fill.classList.add('meter--weak'); pillEl.classList.add('pill--weak'); }
+  else if(level === 'fair'){ fill.classList.add('meter--fair'); pillEl.classList.add('pill--fair'); }
+  else { fill.classList.add('meter--strong'); pillEl.classList.add('pill--strong'); }
 }
 
-/* Evaluate password and update UI */
+function resetStrengthUI(){
+  if (meterFill()) meterFill().style.width = '0%';
+  setMeterClasses('weak');
+  const lang = document.body.dir === 'rtl' ? 'ar' : 'en';
+  const weakText = lang === 'ar' ? 'ضعيف' : 'Weak';
+  if (meterLabel()) meterLabel().textContent = weakText;
+  if (scoreEl()) scoreEl().textContent = '0';
+
+  if (strengthUL()){
+    strengthUL().innerHTML = liHTMLOK(lang === 'ar'
+      ? 'ابدأ الكتابة لرؤية نقاط القوة'
+      : 'Start typing to see strengths');
+  }
+  if (improveUL()){
+    const items = rules.map(r => lang === 'ar' ? translateRule(r.id).improve : r.improve)
+                       .map(liHTMLWarn).join('');
+    improveUL().innerHTML = items;
+  }
+}
+
+function translateRule(id){
+  const map = {
+    len:   { label: '8 أحرف على الأقل', improve: 'استخدم 8 أحرف أو أكثر' },
+    upper: { label: 'يحتوي على حرف كبير', improve: 'أضف حرفًا كبيرًا على الأقل (A–Z)' },
+    num:   { label: 'يحتوي على رقم', improve: 'أضف رقمًا واحدًا على الأقل (0–9)' },
+    special:{label: 'يحتوي على رمز خاص', improve: 'أضف رمزًا خاصًا (مثل !@#$%^&*)'}
+  };
+  return map[id] || {label:'', improve:''};
+}
+
 function evaluatePassword(pwd){
-  const results = rules.map(r => ({ id: r.id, ok: r.test(pwd), label: r.label, improve: r.improve }));
+  const lang = document.body.dir === 'rtl' ? 'ar' : 'en';
 
-  // Score = percentage of rules satisfied
+  // empty => reset
+  if (!pwd) {
+    resetStrengthUI();
+    const input = document.querySelector("#pwd");
+    if (input) input.dir = 'ltr';
+    return;
+  }
+
+  const results = rules.map(r => ({
+    id: r.id,
+    ok: r.test(pwd),
+    label: lang === 'ar' ? translateRule(r.id).label : r.label,
+    improve: lang === 'ar' ? translateRule(r.id).improve : r.improve
+  }));
+
   const passed = results.filter(r => r.ok).length;
   const pct = Math.round((passed / rules.length) * 100);
-
-  // Meter width
   if (meterFill()) meterFill().style.width = `${pct}%`;
 
-  // Label
-  let label = 'Weak';
-  if (passed === 2) label = 'Fair';
-  if (passed === 3) label = 'Good';
-  if (passed === 4) label = 'Strong';
+  // label + color band
+  let label = lang === 'ar' ? 'ضعيف' : 'Weak';
+  let level = 'weak';
+  if (passed === 2){ label = lang === 'ar' ? 'متوسط' : 'Fair'; level = 'fair'; }
+  if (passed >= 3){ label = lang === 'ar' ? 'قوي' : 'Strong'; level = 'strong'; }
   if (meterLabel()) meterLabel().textContent = label;
+  setMeterClasses(level);
 
-  // Score
   if (scoreEl()) scoreEl().textContent = String(pct);
 
-  // Strengths list = satisfied rules
   if (strengthUL()){
     const okItems = results.filter(r => r.ok).map(r => liHTMLOK(r.label));
-    strengthUL().innerHTML = okItems.length ? okItems.join('') : liHTMLOK('Start typing to see strengths');
+    strengthUL().innerHTML = okItems.length ? okItems.join('') :
+      liHTMLOK(lang === 'ar' ? 'ابدأ الكتابة لرؤية نقاط القوة' : 'Start typing to see strengths');
   }
-
-  // Improvements list = failed rules
   if (improveUL()){
     const needItems = results.filter(r => !r.ok).map(r => liHTMLWarn(r.improve));
-    improveUL().innerHTML = needItems.length ? needItems.join('') : liHTMLOK('All core rules satisfied 🎉');
+    improveUL().innerHTML = needItems.length ? needItems.join('') :
+      liHTMLOK(lang === 'ar' ? 'جميع القواعد الأساسية متوفرة 🎉' : 'All core rules satisfied 🎉');
+  }
+
+  // auto input direction if Arabic letters are used
+  const input = document.querySelector("#pwd");
+  if (input) {
+    const arabicPattern = /[\u0600-\u06FF]/;
+    input.dir = arabicPattern.test(pwd) ? 'rtl' : 'ltr';
   }
 }
 
-/* Listen to input */
-document.addEventListener('input', (e)=>{
-  if (e.target && e.target.id === 'pwd'){
-    evaluatePassword(e.target.value || '');
+/* ================= Password Generator ================= */
+function generatePassword(length = 16) {
+  const lower   = 'abcdefghijklmnopqrstuvwxyz';
+  const upper   = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const numbers = '0123456789';
+  const symbols = '!@#$%^&*()_+[]{}|;:,.<>?';
+  const all = lower + upper + numbers + symbols;
+
+  let pwd = '';
+  // ensure at least one of each
+  pwd += upper[Math.floor(Math.random() * upper.length)];
+  pwd += numbers[Math.floor(Math.random() * numbers.length)];
+  pwd += symbols[Math.floor(Math.random() * symbols.length)];
+
+  for (let i = pwd.length; i < length; i++) {
+    pwd += all[Math.floor(Math.random() * all.length)];
   }
+
+  // shuffle
+  return pwd.split('').sort(() => 0.5 - Math.random()).join('');
+}
+
+/* Generate button */
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('.btn');
+  if (!btn) return;
+
+  const input = document.querySelector('#pwd');
+  if (!input) return;
+
+  const newPwd = generatePassword(16);
+  input.value = newPwd;
+  evaluatePassword(newPwd);
 });
 
-/* ---------------- Tips: 8 cards, auto-rotate with per-tip icon ---------------- */
+/* ================= Tips: data & rotation ================= */
 const tips = [
-  {title:"Unique Passwords",         type:"PASSWORD SECURITY", icon:"lock",    desc:"Avoid using the same password across multiple accounts. Each account should have its own unique, strong password."},
-  {title:"Two-Factor Authentication",type:"ACCOUNT SECURITY",  icon:"shield",  desc:"Turn on two-factor authentication (2FA) whenever possible. It adds an extra layer of security to your accounts."},
-  {title:"Password Manager",        type:"PASSWORD SECURITY",  icon:"key",     desc:"Use a reputable password manager to generate and store strong passwords securely."},
-  {title:"Beware of Phishing",      type:"EMAIL & MESSAGES",   icon:"mail",    desc:"Don’t click suspicious links or attachments. Verify the sender and URL before signing in."},
-  {title:"Keep Software Updated",   type:"DEVICE SECURITY",    icon:"refresh", desc:"Enable automatic updates for your OS, browser, and apps to patch known vulnerabilities."},
-  {title:"Use Secure Networks",     type:"NETWORK SAFETY",     icon:"wifi",    desc:"Avoid logging in on public Wi-Fi. If necessary, use a trusted VPN to encrypt your traffic."},
-  {title:"Review Account Activity", type:"MONITORING",         icon:"bell",    desc:"Check security dashboards for unusual logins and enable alerts where available."},
-  {title:"Backup Important Data",   type:"RECOVERY",           icon:"cloud",   desc:"Maintain encrypted backups of critical files so you can recover from loss or ransomware."}
+  {title:"Unique Passwords", title_ar:"كلمات مرور فريدة", 
+   type:"PASSWORD SECURITY", type_ar:"أمن كلمة المرور", 
+   icon:"lock", 
+   desc:"Avoid using the same password across multiple accounts. Each account should have its own unique, strong password.", 
+   desc_ar:"تجنب استخدام نفس كلمة المرور في حسابات متعددة. يجب أن يكون لكل حساب كلمة مرور قوية وفريدة."},
+  {title:"Two-Factor Authentication", title_ar:"المصادقة الثنائية", 
+   type:"ACCOUNT SECURITY", type_ar:"أمن الحساب", 
+   icon:"shield", 
+   desc:"Turn on two-factor authentication (2FA) whenever possible. It adds an extra layer of security to your accounts.", 
+   desc_ar:"قم بتفعيل المصادقة الثنائية (2FA) كلما أمكن. تضيف طبقة أمان إضافية لحساباتك."},
+  {title:"Password Manager", title_ar:"مدير كلمات المرور", 
+   type:"PASSWORD SECURITY", type_ar:"أمن كلمة المرور", 
+   icon:"key", 
+   desc:"Use a reputable password manager to generate and store strong passwords securely.", 
+   desc_ar:"استخدم مدير كلمات مرور موثوق لإنشاء وتخزين كلمات مرور قوية بأمان."},
+  {title:"Beware of Phishing", title_ar:"احذر التصيد الاحتيالي", 
+   type:"EMAIL & MESSAGES", type_ar:"البريد والرسائل", 
+   icon:"mail", 
+   desc:"Don’t click suspicious links or attachments. Verify the sender and URL before signing in.", 
+   desc_ar:"لا تضغط على روابط أو مرفقات مشبوهة. تحقق من المرسل والرابط قبل تسجيل الدخول."},
+  {title:"Keep Software Updated", title_ar:"حافظ على تحديث البرامج", 
+   type:"DEVICE SECURITY", type_ar:"أمن الجهاز", 
+   icon:"refresh", 
+   desc:"Enable automatic updates for your OS, browser, and apps to patch known vulnerabilities.", 
+   desc_ar:"قم بتمكين التحديثات التلقائية لنظام التشغيل والمتصفح والتطبيقات لسد الثغرات المعروفة."},
+  {title:"Use Secure Networks", title_ar:"استخدم شبكات آمنة", 
+   type:"NETWORK SAFETY", type_ar:"سلامة الشبكة", 
+   icon:"wifi", 
+   desc:"Avoid logging in on public Wi-Fi. If necessary, use a trusted VPN to encrypt your traffic.", 
+   desc_ar:"تجنب تسجيل الدخول على شبكات واي فاي عامة. إذا لزم الأمر، استخدم VPN موثوق لتشفير البيانات."},
+  {title:"Review Account Activity", title_ar:"راجع نشاط الحساب", 
+   type:"MONITORING", type_ar:"المراقبة", 
+   icon:"bell", 
+   desc:"Check security dashboards for unusual logins and enable alerts where available.", 
+   desc_ar:"تحقق من لوحات الأمان للنشاطات الغير عادية وفعل التنبيهات إذا كانت متاحة."},
+  {title:"Backup Important Data", title_ar:"نسخ احتياطي للبيانات المهمة", 
+   type:"RECOVERY", type_ar:"الاستعادة", 
+   icon:"cloud", 
+   desc:"Maintain encrypted backups of critical files so you can recover from loss or ransomware.", 
+   desc_ar:"احتفظ بنسخ مشفرة من الملفات الهامة لتتمكن من الاستعادة في حالة الفقد أو هجمات الفدية."}
 ];
 
-let tipIndex = 0, tipTimer, progress = 0, progressEl;
-
-function iconHTML(name){ return icons[name] || icons.lock; }
-function renderDots(){
-  const dots = document.getElementById('tipDots');
-  if (!dots) return;
-  dots.innerHTML = tips.map((_,i)=>`<span class="dot ${i===0?'active':''}"></span>`).join('');
-}
-function setActiveDot(i){
-  const dots = document.querySelectorAll('#tipDots .dot');
-  dots.forEach((d,idx)=>d.classList.toggle('active', idx===i));
-}
-function showTip(i){
-  const t = tips[i];
-  const ic = document.getElementById('tipIcon');
-  const ti = document.getElementById('tipTitle');
-  const ty = document.getElementById('tipType');
-  const de = document.getElementById('tipDesc');
-  const ct = document.getElementById('tipCounter');
-  if (ic) ic.innerHTML = iconHTML(t.icon);
-  if (ti) ti.textContent = t.title;
-  if (ty) ty.textContent = t.type;
-  if (de) de.textContent = t.desc;
-  if (ct) ct.textContent = `Tip ${i+1} of ${tips.length}`;
-  setActiveDot(i);
-  progress = 0;
-  if (!progressEl) progressEl = document.getElementById('tipProgress');
-  if (progressEl) progressEl.style.width = '0%';
-}
-function startRotation(){
-  clearInterval(tipTimer);
-  tipTimer = setInterval(()=>{
-    progress += 5;               // ~4s per tip
-    if (!progressEl) progressEl = document.getElementById('tipProgress');
-    if (progressEl) progressEl.style.width = Math.min(progress,100) + '%';
-    if (progress >= 100){
-      tipIndex = (tipIndex + 1) % tips.length;
-      showTip(tipIndex);
-    }
-  }, 200);
+/* helper to get SVG icon */
+function getIcon(name) {
+  return icons[name] || '';
 }
 
-/* Boot */
-replaceTokens();
-applyStoredTheme();
-renderDots();
-showTip(tipIndex);
-startRotation();
-evaluatePassword(''); // initialize empty state
+/* Tips DOM + rotation (+ dot click nav; arrows commented) */
+document.addEventListener('DOMContentLoaded', ()=>{
+  replaceTokens();
+  applyStoredTheme();
 
-/* Allow clicking dots to jump */
-const tipDotsEl = document.getElementById('tipDots');
-if (tipDotsEl){
-  tipDotsEl.addEventListener('click', e=>{
-    const nodes = Array.from(document.querySelectorAll('#tipDots .dot'));
-    const i = nodes.indexOf(e.target);
-    if (i >= 0){ tipIndex = i; showTip(i); }
+  const tipTitle    = document.getElementById("tipTitle");
+  const tipType     = document.getElementById("tipType");
+  const tipDesc     = document.getElementById("tipDesc");
+  const tipIcon     = document.getElementById("tipIcon");
+  const tipCounter  = document.getElementById("tipCounter");
+  const tipProgress = document.getElementById("tipProgress");
+  const tipDots     = document.getElementById("tipDots");
+  const prevBtn     = document.getElementById("prevTip");
+  const nextBtn     = document.getElementById("nextTip");
+
+  if (!tipTitle || !tipType || !tipDesc || !tipIcon || !tipCounter || !tipProgress || !tipDots) return;
+
+  // create dots with index
+  tips.forEach((_, i) => {
+    const dot = document.createElement("div");
+    dot.classList.add("dot");
+    if (i === 0) dot.classList.add("active");
+    dot.dataset.index = i;
+    tipDots.appendChild(dot);
   });
-}
+
+  let currentTip = 0;
+  let progress = 0;
+  const duration = 15;  // seconds per tip
+  const interval = 100; // ms
+  let rotationInterval;
+
+  function startRotation() {
+    rotationInterval = setInterval(() => {
+      progress += (100 / (duration * 1000 / interval));
+      if (progress >= 100) {
+        progress = 0;
+        currentTip = (currentTip + 1) % tips.length;
+        showTip(currentTip);
+      }
+      tipProgress.style.width = progress + "%";
+    }, interval);
+  }
+
+  function resetRotation() {
+    clearInterval(rotationInterval);
+    progress = 0;
+    tipProgress.style.width = "0%";
+    startRotation();
+  }
+
+  function showTip(index) {
+    const tip = tips[index];
+    const isArabic = document.body.dir === "rtl";
+
+    tipTitle.textContent = isArabic ? tip.title_ar : tip.title;
+    tipType.textContent  = isArabic ? tip.type_ar  : tip.type;
+    tipDesc.textContent  = isArabic ? tip.desc_ar  : tip.desc;
+    tipIcon.innerHTML    = getIcon(tip.icon);
+
+    tipCounter.textContent = isArabic
+      ? `النصيحة ${index + 1} من ${tips.length}`
+      : `Tip ${index + 1} of ${tips.length}`;
+
+    document.querySelectorAll("#tipDots .dot").forEach((d, i) => {
+      d.classList.toggle("active", i === index);
+    });
+
+    currentTip = index;
+  }
+
+  /* === Dot click navigation === */
+  tipDots.addEventListener("click", (e) => {
+    const dot = e.target.closest(".dot");
+    if (!dot) return;
+    const index = parseInt(dot.dataset.index, 10);
+    if (Number.isInteger(index)) {
+      showTip(index);
+      resetRotation();
+    }
+  });
+
+  /* === Arrow navigation (kept but disabled) === */
+  /*
+  if (prevBtn) prevBtn.addEventListener("click", () => {
+    currentTip = (currentTip - 1 + tips.length) % tips.length;
+    showTip(currentTip);
+    resetRotation();
+  });
+
+  if (nextBtn) nextBtn.addEventListener("click", () => {
+    currentTip = (currentTip + 1) % tips.length;
+    showTip(currentTip);
+    resetRotation();
+  });
+  */
+
+  // initial
+  showTip(currentTip);
+  startRotation();
+
+  // initial reset for strength UI (in case input starts empty)
+  resetStrengthUI();
+});
