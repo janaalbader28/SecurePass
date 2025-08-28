@@ -12,24 +12,23 @@
 <body>
 
   <!--HEADER -->
-<header class="header">
-  <div class="header-inner">
-    <div class="brand">
-      <span class="badge" aria-hidden="true">${shield()}</span>
-      <span data-en="SecurePass" data-ar=" SecurePass">SecurePass</span>
-    </div>
+  <header class="header">
+    <div class="header-inner">
+      <div class="brand">
+        <span class="badge" aria-hidden="true">${shield()}</span>
+        <span data-en="SecurePass" data-ar=" SecurePass">SecurePass</span>
+      </div>
 
-    <!-- actions on the right -->
-    <div class="header-actions">
-      <button class="icon-btn" data-action="lang">
-        <svg viewBox="0 0 24 24"><path d="M12 2L15 8H9L12 2Z"/></svg>
-        العربيه
-      </button>
-      <button class="mode-toggle" aria-label="Toggle theme">${sun()}</button>
+      <!-- actions on the right -->
+      <div class="header-actions">
+        <button class="icon-btn" data-action="lang">
+          <svg viewBox="0 0 24 24"><path d="M12 2L15 8H9L12 2Z"/></svg>
+          العربيه
+        </button>
+        <button class="mode-toggle" aria-label="Toggle theme">${sun()}</button>
+      </div>
     </div>
-  </div>
-</header>
-
+  </header>
 
   <main class="container">
     <!-- Hero -->
@@ -70,7 +69,12 @@
           <span id="meterLabel" data-en="Weak" data-ar="ضعيف">Weak</span>
         </div>
       </div>
-      <div class="score" data-en="Score:" data-ar="النقاط:">Score: <span id="score">0</span>/100</div>
+
+      <!-- Score line (Arabic-safe) -->
+      <div class="score">
+        <span id="scoreLabel" data-en="Score:" data-ar="النقاط:">Score:</span>
+        <span id="score">0</span>/100
+      </div>
 
       <!-- Points -->
       <div class="points">
@@ -113,32 +117,16 @@
           Avoid using the same password across multiple accounts. Each account should have its own unique, strong password.
         </div>
       </div>
-        <div class="tips-navigation">
-    <!-- <button id="prevTip" aria-label="Previous Tip">◀</button>
-    <button id="nextTip" aria-label="Next Tip">▶</button> -->
-  </div>
 
+      <div class="tips-navigation"></div>
 
- <div class="progress">
-  <!-- العداد اللي يبين رقم النصيحة -->
-  <div id="tipCounter" data-en="Tip 1 of 8" data-ar="النصيحة 1 من 8">
-    Tip 1 of 8
-  </div>
-
-  <!-- نص صغير يوضح إن النصائح تتغير تلقائي -->
-  <div data-en="Auto-rotating" data-ar="تدوير تلقائي">
-    Auto-rotating
-  </div>
-
-  <!-- شريط التقدم -->
-  <div class="progressbar">
-    <span id="tipProgress"></span>
-  </div>
-
-  <!-- النقاط الصغيرة اللي تبين أي نصيحة مفعلة -->
-  <div class="tip-dots" id="tipDots" aria-hidden="true"></div>
-</div>
-
+      <div class="progress">
+        <div id="tipCounter" data-en="Tip 1 of 8" data-ar="النصيحة 1 من 8">Tip 1 of 8</div>
+        <div data-en="Auto-rotating" data-ar="تدوير تلقائي">Auto-rotating</div>
+        <div class="progressbar"><span id="tipProgress"></span></div>
+        <div class="tip-dots" id="tipDots" aria-hidden="true"></div>
+      </div>
+    </section>
 
     <!-- Footer -->
     <footer class="footer">
@@ -150,6 +138,5 @@
   </main>
 
   <script src="app.js"></script>
-  <script src="lang.js"></script>
 </body>
 </html>
