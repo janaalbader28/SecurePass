@@ -13,7 +13,6 @@ const icons = {
   mail:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M3 7l9 6 9-6" stroke="currentColor" stroke-width="1.6" fill="none"/></svg>`,
   refresh:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 12a8 8 0 1 1-2.3-5.7" stroke="currentColor" stroke-width="1.6" fill="none"/><path d="M20 5v4h-4" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>`,
   wifi:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 8a16 16 0 0 1 20 0M5 11a11 11 0 0 1 14 0M8 14a6 6 0 0 1 8 0" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="12" cy="18" r="1.5" fill="currentColor"/></svg>`,
-  bell:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 9a6 6 0 1 1 12 0v4l2 3H4l2-3V9" stroke="currentColor" stroke-width="1.6" fill="none"/><path d="M10 19a2 2 0 0 0 4 0" stroke="currentColor" stroke-width="1.6" fill="none"/></svg>`,
   cloud:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 18h10a4 4 0 0 0 0-8 6 6 0 0 0-11.3-1.9A4.5 4.5 0 0 0 7 18z" stroke="currentColor" stroke-width="1.6" fill="none"/></svg>`
 };
 
@@ -41,7 +40,6 @@ function applyStoredTheme(){
   const btn = document.querySelector('.mode-toggle');
   if (btn) btn.innerHTML = theme === 'dark' ? icons.moon : icons.sun;
 }
-
 document.addEventListener('click', (e)=>{
   const btn = e.target.closest('.mode-toggle');
   if(!btn) return;
@@ -87,17 +85,18 @@ document.addEventListener("click", (e) => {
       lang = "ar";
     }
 
-    // swap all texts
+    // swap texts
     document.querySelectorAll("[data-en][data-ar]").forEach(el => {
       el.textContent = el.dataset[lang];
     });
-
     // swap placeholders
     document.querySelectorAll("input[data-en][data-ar]").forEach(inp => {
       inp.placeholder = inp.dataset[lang];
     });
+    // score label
+    const scoreLabel = document.getElementById('scoreLabel');
+    if (scoreLabel) scoreLabel.textContent = scoreLabel.dataset[lang];
 
-    // also reset strength UI wording according to language if empty
     const pwdVal = document.querySelector('#pwd')?.value || '';
     if (!pwdVal) resetStrengthUI();
   }
@@ -140,6 +139,16 @@ function setMeterClasses(level){
   else { fill.classList.add('meter--strong'); pillEl.classList.add('pill--strong'); }
 }
 
+function translateRule(id){
+  const map = {
+    len:   { label: '8 أحرف على الأقل', improve: 'استخدم 8 أحرف أو أكثر' },
+    upper: { label: 'يحتوي على حرف كبير', improve: 'أضف حرفًا كبيرًا على الأقل (A–Z)' },
+    num:   { label: 'يحتوي على رقم', improve: 'أضف رقمًا واحدًا على الأقل (0–9)' },
+    special:{label: 'يحتوي على رمز خاص', improve: 'أضف رمزًا خاصًا (مثل !@#$%^&*)'}
+  };
+  return map[id] || {label:'', improve:''};
+}
+
 function resetStrengthUI(){
   if (meterFill()) meterFill().style.width = '0%';
   setMeterClasses('weak');
@@ -147,6 +156,8 @@ function resetStrengthUI(){
   const weakText = lang === 'ar' ? 'ضعيف' : 'Weak';
   if (meterLabel()) meterLabel().textContent = weakText;
   if (scoreEl()) scoreEl().textContent = '0';
+  const scoreLabel = document.getElementById('scoreLabel');
+  if (scoreLabel) scoreLabel.textContent = lang === 'ar' ? 'النقاط:' : 'Score:';
 
   if (strengthUL()){
     strengthUL().innerHTML = liHTMLOK(lang === 'ar'
@@ -160,25 +171,85 @@ function resetStrengthUI(){
   }
 }
 
-function translateRule(id){
-  const map = {
-    len:   { label: '8 أحرف على الأقل', improve: 'استخدم 8 أحرف أو أكثر' },
-    upper: { label: 'يحتوي على حرف كبير', improve: 'أضف حرفًا كبيرًا على الأقل (A–Z)' },
-    num:   { label: 'يحتوي على رقم', improve: 'أضف رقمًا واحدًا على الأقل (0–9)' },
-    special:{label: 'يحتوي على رمز خاص', improve: 'أضف رمزًا خاصًا (مثل !@#$%^&*)'}
-  };
-  return map[id] || {label:'', improve:''};
+/* ===== Common password detection (policy-compliant) =====
+   References:
+   - NordPass corporate/common lists (methodology + corp section)
+   - TechRadar summary showing policy-compliant industry examples like "P@ssw0rd", "Ramada@123", "Reservations2021!"
+   These formats appear frequently in breaches (season+year+symbol, Welcome/Admin/Qwerty + digits + symbol, etc.).
+*/
+
+/* A seed of known, cited examples that already meet complexity */
+const COMMON_COMPLEX_EXACT = new Set([
+  'p@ssw0rd',          // TechRadar / industry reporting
+  'p@ssw0rd!',         // variant
+  'password1!',        // policy-compliant variant seen widely
+  'welcome1!',         // common default-style
+  'welcome@123',       // industry style
+  'admin@123',         // industry style
+  'qwerty123!',        // industry style
+  'ramada@123',        // TechRadar (hospitality industry examples)
+  'reservations2021!'  // TechRadar article example (corrected spelling of the concept)
+].map(s => s.toLowerCase()));
+
+/* Regex patterns for top “policy-compliant” formats frequently seen in corp environments */
+const COMMON_COMPLEX_PATTERNS = [
+  // Season + year + symbol (e.g., Spring2025!)
+  /^(spring|summer|autumn|fall|winter)(19|20)\d{2}[!@#?$%]$/i,
+  // Month + year + optional symbol (e.g., Oct2024!, March2025!)
+  /^(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)(19|20)\d{2}[!@#?$%]?$/i,
+  // Word + digits + symbol (classic policy “pass+digit+special” variants)
+  /^password\d{1,4}[!@#?$%]$/i,
+  /^welcome\d{1,4}([!@#?$%]|@123)?$/i,
+  /^admin\d{0,4}([!@#?$%]|@123)?$/i,
+  /^qwerty\d{1,4}[!@#?$%]?$/i,
+  // Company/user defaults
+  /^[a-z]{3,12}[@!]123$/i,         // e.g., Company@123, User!123
+  /^(changeme|changeit)[@!]?\d{0,4}$/i,
+  /^temp[@!]?\d{1,4}$/i,
+  /^default[@!]?\d{0,4}$/i
+];
+
+function normalizePwd(s){
+  return (s || '')
+    .toLowerCase()
+    .replace(/[@]/g,'@') // keep '@' (used in patterns)
+    .replace(/[0]/g,'0')
+    .replace(/[1!|]/g,'1') // for quick normalization checks (we still rely on regex above)
+    .replace(/[^a-z0-9@!#?$%]/g, ''); // strip odd chars but keep typical specials
 }
 
+function isCommonPolicyCompliant(pwd){
+  const n = normalizePwd(pwd);
+  if (COMMON_COMPLEX_EXACT.has(n)) return true;
+  return COMMON_COMPLEX_PATTERNS.some(re => re.test(pwd));
+}
+
+/* ================= Evaluate Password ================= */
 function evaluatePassword(pwd){
   const lang = document.body.dir === 'rtl' ? 'ar' : 'en';
 
-  // empty => reset
-  if (!pwd) {
+  // empty/space-only => reset + warn
+  if (!pwd || pwd.trim() === '') {
     resetStrengthUI();
     const input = document.querySelector("#pwd");
     if (input) input.dir = 'ltr';
+    if (improveUL()) {
+      const msg = lang === 'ar' 
+        ? 'لا يمكن ترك الحقل فارغًا أو إدخال مسافات فقط' 
+        : 'Cannot leave empty or use spaces only';
+      improveUL().innerHTML = liHTMLWarn(msg);
+    }
     return;
+  }
+
+  // spaces not allowed inside
+  if (/\s/.test(pwd)) {
+    if (improveUL()) {
+      const msg = lang === 'ar' 
+        ? 'كلمة المرور لا يمكن أن تحتوي على مسافات' 
+        : 'Password cannot contain spaces';
+      improveUL().innerHTML = liHTMLWarn(msg);
+    }
   }
 
   const results = rules.map(r => ({
@@ -189,31 +260,54 @@ function evaluatePassword(pwd){
   }));
 
   const passed = results.filter(r => r.ok).length;
-  const pct = Math.round((passed / rules.length) * 100);
+
+  // Detect “common but policy-compliant” passwords
+  const commonComplex = isCommonPolicyCompliant(pwd);
+
+  // Score: base on rules, but cap if commonComplex
+  let pct = Math.round((passed / rules.length) * 100);
+  if (commonComplex) pct = Math.min(pct, 60); // never allow 100
+
   if (meterFill()) meterFill().style.width = `${pct}%`;
 
-  // label + color band
+  // Label & class
   let label = lang === 'ar' ? 'ضعيف' : 'Weak';
   let level = 'weak';
   if (passed === 2){ label = lang === 'ar' ? 'متوسط' : 'Fair'; level = 'fair'; }
   if (passed >= 3){ label = lang === 'ar' ? 'قوي' : 'Strong'; level = 'strong'; }
+  if (commonComplex){
+    label = lang === 'ar' ? 'شائعة وفق السياسة' : 'Common (Policy-Compliant)';
+    // keep level at least 'fair' visually to reflect complexity, but not green-strong
+    level = (passed >= 3) ? 'fair' : 'weak';
+  }
   if (meterLabel()) meterLabel().textContent = label;
   setMeterClasses(level);
 
   if (scoreEl()) scoreEl().textContent = String(pct);
 
+  // Strengths
   if (strengthUL()){
     const okItems = results.filter(r => r.ok).map(r => liHTMLOK(r.label));
     strengthUL().innerHTML = okItems.length ? okItems.join('') :
       liHTMLOK(lang === 'ar' ? 'ابدأ الكتابة لرؤية نقاط القوة' : 'Start typing to see strengths');
   }
+
+  // Improvements
   if (improveUL()){
     const needItems = results.filter(r => !r.ok).map(r => liHTMLWarn(r.improve));
+
+    if (commonComplex) {
+      const msg = lang === 'ar'
+        ? 'تنبيه: كلمة مرور شائعة رغم استيفاء الشروط — يُنصح بتغييرها (اختر عبارة فريدة أو 3 كلمات عشوائية).'
+        : 'Warning: Common password even though it meets policy — change it (use a unique passphrase or three random words).';
+      needItems.unshift(liHTMLWarn(msg));
+    }
+
     improveUL().innerHTML = needItems.length ? needItems.join('') :
       liHTMLOK(lang === 'ar' ? 'جميع القواعد الأساسية متوفرة 🎉' : 'All core rules satisfied 🎉');
   }
 
-  // auto input direction if Arabic letters are used
+  // auto direction if Arabic characters used
   const input = document.querySelector("#pwd");
   if (input) {
     const arabicPattern = /[\u0600-\u06FF]/;
@@ -238,8 +332,6 @@ function generatePassword(length = 16) {
   for (let i = pwd.length; i < length; i++) {
     pwd += all[Math.floor(Math.random() * all.length)];
   }
-
-  // shuffle
   return pwd.split('').sort(() => 0.5 - Math.random()).join('');
 }
 
@@ -247,10 +339,8 @@ function generatePassword(length = 16) {
 document.addEventListener('click', (e) => {
   const btn = e.target.closest('.btn');
   if (!btn) return;
-
   const input = document.querySelector('#pwd');
   if (!input) return;
-
   const newPwd = generatePassword(16);
   input.value = newPwd;
   evaluatePassword(newPwd);
@@ -301,11 +391,9 @@ const tips = [
 ];
 
 /* helper to get SVG icon */
-function getIcon(name) {
-  return icons[name] || '';
-}
+function getIcon(name) { return icons[name] || ''; }
 
-/* Tips DOM + rotation (+ dot click nav; arrows commented) */
+/* Tips rotation + dots */
 document.addEventListener('DOMContentLoaded', ()=>{
   replaceTokens();
   applyStoredTheme();
@@ -317,12 +405,9 @@ document.addEventListener('DOMContentLoaded', ()=>{
   const tipCounter  = document.getElementById("tipCounter");
   const tipProgress = document.getElementById("tipProgress");
   const tipDots     = document.getElementById("tipDots");
-  const prevBtn     = document.getElementById("prevTip");
-  const nextBtn     = document.getElementById("nextTip");
 
   if (!tipTitle || !tipType || !tipDesc || !tipIcon || !tipCounter || !tipProgress || !tipDots) return;
 
-  // create dots with index
   tips.forEach((_, i) => {
     const dot = document.createElement("div");
     dot.classList.add("dot");
@@ -376,7 +461,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
     currentTip = index;
   }
 
-  /* === Dot click navigation === */
   tipDots.addEventListener("click", (e) => {
     const dot = e.target.closest(".dot");
     if (!dot) return;
@@ -387,25 +471,9 @@ document.addEventListener('DOMContentLoaded', ()=>{
     }
   });
 
-  /* === Arrow navigation (kept but disabled) === */
-  /*
-  if (prevBtn) prevBtn.addEventListener("click", () => {
-    currentTip = (currentTip - 1 + tips.length) % tips.length;
-    showTip(currentTip);
-    resetRotation();
-  });
-
-  if (nextBtn) nextBtn.addEventListener("click", () => {
-    currentTip = (currentTip + 1) % tips.length;
-    showTip(currentTip);
-    resetRotation();
-  });
-  */
-
-  // initial
   showTip(currentTip);
   startRotation();
 
-  // initial reset for strength UI (in case input starts empty)
+  // initial reset for strength UI (if input empty)
   resetStrengthUI();
 });
