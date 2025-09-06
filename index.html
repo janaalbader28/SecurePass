@@ -1,142 +1,651 @@
-<!doctype html>
-<html lang="en" data-theme="light">
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title data-en="SecurePass · Create Stronger Passwords" data-ar="SecurePass · إنشاء كلمات مرور أقوى">SecurePass · Create Stronger Passwords</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="img/favicon.ico">
+  <meta name="description" content="Byraq Cyber">
+  <title>بيرق سايبر</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css" />
+  <!-- Swiper CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+
 </head>
 <body>
-
-  <!--HEADER -->
-  <header class="header">
-    <div class="header-inner">
-      <div class="brand">
-        <span class="badge" aria-hidden="true">${shield()}</span>
-        <span data-en="SecurePass" data-ar=" SecurePass">SecurePass</span>
-      </div>
-
-      <!-- actions on the right -->
-      <div class="header-actions">
-        <button class="icon-btn" data-action="lang">
-          <svg viewBox="0 0 24 24"><path d="M12 2L15 8H9L12 2Z"/></svg>
-          العربيه
-        </button>
-        <button class="mode-toggle" aria-label="Toggle theme">${sun()}</button>
-      </div>
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <a href="#home" class="brand">
+        <img src="img/logo.png" alt="بيرق سايبر" class="brand-logo" />
+        <span class="brand-text">بيرق سايبر</span>
+      </a>
+      <nav class="main-nav" aria-label="التنقل الرئيسي">
+      <button id="themeToggle" class="mode-toggle" aria-label="Toggle theme" type="button"></button>
+        <!-- underline + glow on active -->
+        <a class="nav-link active" href="#home">الرئيسية</a>
+        <a class="nav-link" href="#about">من نحن</a>
+        <a class="nav-link" href="#services">الخدمات</a>
+        <a class="nav-link" href="#projects">المشاريع</a>
+        <a class="nav-link" href="#contact">التواصل</a>
+      </nav>
     </div>
   </header>
 
-  <main class="container">
-    <!-- Hero -->
-    <section class="hero">
-      <div class="logo-bubble">${shield()}</div>
-      <h1 data-en="Create Stronger Passwords" data-ar="إنشاء كلمات مرور أقوى">Create Stronger Passwords</h1>
-      <p class="sub" data-en="Test your password strength, generate secure passwords, and learn cybersecurity best practices to protect your digital life." 
-         data-ar="اختبر قوة كلمة مرورك، وأنشئ كلمات مرور قوية، وتعلم أفضل ممارسات الأمن السيبراني لحماية حياتك الرقمية.">
-        Test your password strength, generate secure passwords, and learn cybersecurity best practices to protect your digital life.
-      </p>
-    </section>
+  <main id="home" class="hero">
+    <div class="container">
+      <section class="hero-card" aria-labelledby="heroTitle">
+        <h1 id="heroTitle" class="hero-title">
+          بيرق سايبر: حماة المستقبل الرقمي وبناة الثقة المستدامة
+        </h1>
+        <p class="hero-sub">
+          في عصر يتسارع فيه التحول الرقمي بوتيرة مذهلة، تبرز الحاجة إلى قادة تقنيين لا
+          يبنون حلولاً فحسب، بل يبنون ثقة ويجمّعون مسارات التقدم. من هذه الرؤية
+          وُلدت، نشأت فرق بيرق سايبر ليس فقط كفريق تقني سعودي طموح، بل كـ رائد
+          إقليمي وعالمي يمتلك الأدوات والرؤية لتشكيل المستقبل.
+        </p>
+      </section>
 
-    <!-- Strength Checker Card -->
-    <section class="card headerlike">
-      <div class="card-title">
-        <span class="tiny-badge">${shield()}</span>
-        <h2 class="checker-heading" data-en="Password Strength Checker" data-ar="فاحص قوة كلمة المرور">Password Strength Checker</h2>
+      <!-- buttons -->
+      <div class="action-bar">
+        <a href="#faq" class="btn-tab btn-ghost-tab">الأسئلة الشائعة</a>
+        <a href="#" class="btn-tab btn-primary-tab">تحميل البروفايل PDF</a>
       </div>
-      <p class="muted card-sub" data-en="Create secure passwords and learn cybersecurity best practices" data-ar="أنشئ كلمات مرور قوية وتعلم أفضل ممارسات الأمن السيبراني">Create secure passwords and learn cybersecurity best practices</p>
 
-      <!-- Password field -->
-      <div class="label" data-en="Enter your password" data-ar="ادخل كلمة المرور">Enter your password</div>
-      <div class="input-row">
-        <div class="input-wrap">
-          <input id="pwd" type="password" placeholder="" data-en="Type your password here..." data-ar="اكتب كلمة المرور هنا..." aria-label="Password input" />
-          <div class="affix">
-            <button class="icon-btn" type="button" data-action="copy" aria-label="Copy password">${copy()}</button>
-            <button class="icon-btn" type="button" data-action="toggle" aria-label="Show password">${eye()}</button>
+      <!-- stats -->
+      <section class="stats">
+        <div class="stat"><div class="stat-value">20+</div><div class="stat-label">مشروع</div></div>
+        <div class="stat"><div class="stat-value">20+</div><div class="stat-label">مشروع</div></div>
+        <div class="stat"><div class="stat-value">20+</div><div class="stat-label">مشروع</div></div>
+      </section>
+    </div>
+
+    <div class="grid-hex"></div>
+    <div class="grid-hex grid-hex--right"></div>
+  </main>
+
+
+
+<!-- About us section -->
+<section id="about" class="about-section">
+  <div class="container about-container">
+    <!-- Vision card with angled edges -->
+    <div class="vision-card">
+      <h2 class="vision-title"><span>من نحن:</span> الرؤية التي تقودنا</h2>
+      <p class="vision-text">
+نحن فريق [بيرق سايبر ] فريق تقني متخصص في تقديم حلول برمجية وأمنية مبتكرة، نعمل على تحويل الأفكار إلى منتجات رقمية عالية الجودة.
+يمتلك فريقنا خبرات متنوعة في تطوير المواقع والتطبيقات، الأمن السيبراني، والحلول التقنية المخصصة، مع التزام كامل بالجودة والالتزام بالمواعيد.
+      </p>
+    </div>
+
+    <!-- role of technology -->
+    <p class="about-tagline">
+      التكنولوجيا وسيلة للتيسير وليس للتعقيد. نحن نوسع المدارك ونسهل الطريق للمجتمع لمواكبة التقدم العالمي.
+    </p>
+
+    <!-- Mission -->
+    <div class="mission-card">
+      <p class="mission-text">
+        رسالتنا تنبع من إيمان راسخ بأن التكنولوجيا هي وسيلة للتيسير وليس للتعقيد. لذلك، نحن نوسع المدارك ونسهل الطريق للمجتمع لمواكبة التقدم العالمي. نُمكن الأفراد والمؤسسات من خلال حزمة متكاملة من الخدمات في مجالات الأمن السيبراني، البرمجة، والذكاء الاصطناعي، مدعومة بخبرة عميقة ومعرفة متجددة.
+      </p>
+    </div>
+
+    <!-- Goals -->
+    <h3 class="goals-heading">أهدافنا الاستراتيجية: بناء نحو مستقبل تفاعلي وآمن</h3>
+    <div class="goals">
+    <div class="goal">
+        <div class="goal-purple">
+        <!-- Light bulb icon for “رفع الوعي التقني” -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 12h1m8 -9v1m8 8h1m-15.4 -6.4l.7 .7m12.1 -.7l-.7 .7" />
+            <path d="M9 16a5 5 0 1 1 6 0a3.5 3.5 0 0 0 -1 3a2 2 0 0 1 -4 0a3.5 3.5 0 0 0 -1 -3" />
+            <path d="M9.7 17l4.6 0" />
+        </svg>
+        </div>
+        <div class="goal-text">رفع الوعي التقني</div>
+    </div>
+
+    <div class="goal goal-reverse">
+        <div class="goal-purple">
+        <!-- Network icon for “بناء مجتمع رقمي متفاعل” -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="5" r="2" />
+            <circle cx="6"  cy="17" r="2" />
+            <circle cx="18" cy="17" r="2" />
+            <line x1="12" y1="5"  x2="6"  y2="17" />
+            <line x1="12" y1="5"  x2="18" y2="17" />
+            <line x1="6"  y1="17" x2="18" y2="17" />
+        </svg>
+        </div>
+        <div class="goal-text">بناء مجتمع رقمي متفاعل</div>
+    </div>
+
+    <div class="goal">
+        <div class="goal-purple">
+        <!-- Shield icon for “تعزيز الثقة مع القطاعات” -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2l-8 3v5c0 6 4 9.5 8 12 4-2.5 8-6 8-12V5l-8-3z" />
+        </svg>
+        </div>
+        <div class="goal-text">تعزيز الثقة مع القطاعات</div>
+    </div>
+    </div>
+
+
+    <!-- Capabilities -->
+<div class="capabilities-in-about">
+  <h2 class="caps-title">قدرات الفريق التقنية: الإبداع خلف المشاريع</h2>
+  <p class="caps-sub">
+    ما يميز بيرق سايبر ليس فقط المشاريع التي نطلقها، بل المهارات والقدرات الأساسية
+    التي تمكننا من التنفيذ بتميّز.
+  </p>
+
+  <div class="cap-grid">
+  <article class="cap-card cap-ai">
+    <div class="cap-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 3l7 4-7 4-7-4 7-4zM5 11l7 4 7-4M5 11v6l7 4 7-4v-6"/>
+      </svg>
+    </div>
+    <h3>دمج الذكاء الاصطناعي وتحليل البيانات</h3>
+    <ul>
+      <li>تحليل ذكي : استخدام أدوات مثل GPT و BERT لتحويل النصوص الطويلة إلى ملخصات دقيقة.</li>
+      <li>تحليل المصادر المفتوحة: (OSINT) لدعم الأمن و التحقيقات.</li>
+      <li>تعزيز الإنتاجية: أتمتة المهام المعقدة و تقديم رؤى لصناع القرار.</li>
+      <li>اتخاذ القرار: أدوات قوية لتحليل البيانات و تقديم معلومات دقيقة.</li>
+    </ul>
+  </article>
+
+  <article class="cap-card cap-sec">
+    <div class="cap-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 3l7 4-7 4-7-4 7-4zM5 11l7 4 7-4M5 11v6l7 4 7-4v-6"/>
+      </svg>
+    </div>
+    <h3>التميّز في الأمن السيبراني والحماية</h3>
+    <ul>
+      <li>تأمين التطبيقات: حماية من هجماتSQL injection و XSS و غيرها.</li>
+      <li>حماية البيانات: استخدام بروتوكولات تشفير حديثة (HTTPS)ونسخ احتياطية منتظمة.</li>
+      <li>الامتثال و الخصوصية: توافق مع القوانين المحلية و العالمية لحماية البيانات.</li>
+      <li>إدارة الصلاحيات الدقيقة: أنظمة تحكم دقيقة تضمن الوصول الآمن.</li>
+    </ul>
+  </article>
+
+  <article class="cap-card cap-ux">
+    <div class="cap-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 3l7 4-7 4-7-4 7-4zM5 11l7 4 7-4M5 11v6l7 4 7-4v-6"/>
+      </svg>
+    </div>
+    <h3>الابتكار في تجربة المستخدم (UX/UI Innovation)</h3>
+    <ul>
+      <li>هوية بصرية موحدة: ألوان و خطوط متناسقة تعكس هوية العلامة التجارية.</li>
+      <li>واجهات متجاوبة: تعمل بسلاسة على الهواتف و الشاشات الكبيرة.</li>
+      <li>تبسيط العمليات: تحويل المهام المعقدة(مثل التسجيل و الشراء)إلى خطوات بسيطة.</li>
+      <li>تخصيص التجارب: حسب أدوار المستخدمين (مدير/موظف)لزيادة الفعالية.</li>
+    </ul>
+  </article>
+
+  <article class="cap-card cap-build">
+    <div class="cap-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 3l7 4-7 4-7-4 7-4zM5 11l7 4 7-4M5 11v6l7 4 7-4v-6"/>
+      </svg>
+    </div>
+    <h3>قدرة البناء والتطوير القوي والقابل للتوسع</h3>
+    <ul>
+      <li>أنظمة قوية تتحمل الضغط و النمو الكبير في عدد المستخدمين.</li>
+      <li>المرونة و الاستدامة بنية رقمية قابلة للتطوير و الصيانة.</li>
+      <li>التوثيق الشامل: نقل المعرفة بسلاسة و ضمان استمرارية الأعمال.</li>
+      <li>أحدث التقنيات: تطوير واجهات خلفية بأدوات حديثة لحلول موثقة و عالية الأداء.</li>
+    </ul>
+  </article>
+</div>
+
+</div>
+
+<!-- Team (inside #about) -->
+<div class="team-in-about">
+  <h3 class="team-heading">أعضاء فريق بيرق</h3>
+
+  <div class="swiper team-swiper">
+    <div class="swiper-wrapper">
+
+    <!-- بطاقة ليان -->
+    <div class="swiper-slide team-card">
+      <h4>ليان محمد الحربي</h4>
+      <span class="role">مطورة ذكاء اصطناعي وUI/UX</span>
+      <ul class="team-details">
+        <li>طالبة علوم حاسب، جامعة أم القرى، معدل 3.76/4</li>
+        <li>شارك في هاكاثونات وحصل على مراكز أولى</li>
+        <li>تتقن Python, Java, SQL, Linux, Git</li>
+        <li>إجادة تامة للغة الإنجليزية</li>
+      </ul>
+    </div>
+
+    <!-- بطاقة جنى -->
+    <div class="swiper-slide team-card">
+      <h4>جنى عبدالله البدر</h4>
+      <span class="role">إدارة مشاريع وذكاء اصطناعي</span>
+      <ul class="team-details">
+        <li>خريجة علوم حاسب من جامعة الإمام عبدالرحمن بن فيصل</li>
+        <li>خبرة عملية في الذكاء الاصطناعي، Full Stack، وتحليل البيانات</li>
+        <li>مشاريع تشمل تطبيقات ويب وموبايل وحلول ذكاء اصطناعي</li>
+      </ul>
+    </div>
+
+    <!-- بطاقة شهد -->
+    <div class="swiper-slide team-card">
+      <h4>شهد أحمد السمراني</h4>
+      <span class="role">باحثة AI وشبكات</span>
+      <ul class="team-details">
+        <li>طالبة علوم حاسب، جامعة الملك عبدالعزيز وخريجة برنامج موهبة</li>
+        <li>تدربت في أرامكو وخبرتها في الذكاء الاصطناعي والهندسة الشبكية</li>
+        <li>مشاريع: Safir AI Chatbot، الرسوميات الحاسوبية، هندسة البرمجيات</li>
+        <li>تدريبات مكثفة في Azure AI و CompTIA</li>
+      </ul>
+    </div>
+
+    <!-- بطاقة رنيم -->
+    <div class="swiper-slide team-card">
+      <h4>رنيم فهد الشهري</h4>
+      <span class="role">أمن سيبراني وCloud</span>
+      <ul class="team-details">
+        <li>خريجة نظم معلومات، جامعة الملك خالد، معدل 4.85/5</li>
+        <li>تدريبات متقدمة في Cloud Computing و SOC L1 & L2</li>
+        <li>قاد فريق CTF في REQAM TECH</li>
+        <li>مشاريع: تحليل برمجيات خبيثة بالذكاء الاصطناعي، Azure Chatbot، بنية تحتية على AWS</li>
+      </ul>
+    </div>
+
+    <!-- بطاقة فاطمة -->
+    <div class="swiper-slide team-card">
+      <h4>فاطمة محمد الحجوري</h4>
+      <span class="role">رائدة الأمن السيبراني</span>
+      <ul class="team-details">
+        <li>مؤسِّسة فريق بيرق سايبر، تدرس دبلوم إدارة أنظمة الشبكات</li>
+        <li>مشاريع: تطوير أنظمة أمنية ومحاكاة الشبكات</li>
+        <li>حاصلة على شهادات متعددة من Cisco وAWS</li>
+        <li>تتحدث العربية والإنجليزية بطلاقة والتركية بمستوى متوسط</li>
+      </ul>
+    </div>
+
+    <!-- بطاقة صالح -->
+    <div class="swiper-slide team-card">
+      <h4>صالح العادل</h4>
+      <span class="role">خبير اختراق وأمن سيبراني</span>
+      <ul class="team-details">
+        <li>متخصص في الأمن السيبراني واختبار الاختراق</li>
+        <li>عمل كمهندس بحث وتطوير وقاد فرق تطوير أنظمة آمنة</li>
+        <li>شهادات: eJPTv2، ويستعد لـ eWAPT وOSCP</li>
+        <li>المؤسس المشارك لفريق بيرق سايبر</li>
+      </ul>
+    </div>
+
+    <!-- بطاقة ندى -->
+    <div class="swiper-slide team-card">
+      <h4>ندى بكر محمد الجهني</h4>
+      <span class="role">مبرمجة وتطوير ويب</span>
+      <ul class="team-details">
+        <li>دبلوم برمجة وتطوير الويب، الكلية التقنية الرقمية بجدة</li>
+        <li>مشاريع: HTML, CSS, PHP, SQL</li>
+        <li>درست الأمن السيبراني والحوسبة السحابية</li>
+      </ul>
+    </div>
+
+    <!-- بطاقة طيف -->
+    <div class="swiper-slide team-card">
+      <h4>طيف عبدالله الثقفي</h4>
+      <span class="role">صانعة محتوى إعلامي</span>
+      <ul class="team-details">
+        <li>طالبة إعلام رقمي، جامعة جدة</li>
+        <li>متخصصة في صناعة المحتوى والتحرير والتصوير</li>
+        <li>حصلت على المركز الثالث في هاكاثون تميّز</li>
+      </ul>
+    </div>
+
+    <!-- بطاقة إبراهيم -->
+    <div class="swiper-slide team-card">
+      <h4>إبراهيم عبدالمحسن علي عبدالرحيم</h4>
+      <span class="role">مسؤول محتوى وتسويق</span>
+      <ul class="team-details">
+        <li>خريج تقنية معلومات، الجامعة السعودية الإلكترونية</li>
+        <li>خبرة في المبيعات والتسويق الرقمي وإدارة المحتوى</li>
+        <li>عمل كمسؤول إعلامي في مؤسسة كفك ومسوق رقمي في تكافل العربية</li>
+      </ul>
+    </div>
+
+    <!-- بطاقة عبدالمحسن سامي -->
+    <div class="swiper-slide team-card">
+      <h4>عبدالمحسن سامي السليم</h4>
+      <span class="role">محلل بيانات وPower BI</span>
+      <ul class="team-details">
+        <li>خريج علوم حاسب، جامعة الإمام محمد بن سعود، معدل 4.32</li>
+        <li>متخصص في Power BI و SQL</li>
+        <li>تحويل البيانات إلى رؤى قابلة للتنفيذ لدعم اتخاذ القرار</li>
+      </ul>
+    </div>
+
+    <!-- بطاقة ليان السرح -->
+    <div class="swiper-slide team-card">
+      <h4>ليان السرح</h4>
+      <span class="role">مهندسة حاسب وشبكات</span>
+      <ul class="team-details">
+        <li>طالبة هندسة حاسب وشبكات، جامعة الجوف</li>
+        <li>تطوير تطبيقات Java وأساسيات الشبكات</li>
+      </ul>
+    </div>
+
+    <!-- بطاقة هند -->
+    <div class="swiper-slide team-card">
+      <h4>هند عدي الخالدي</h4>
+      <span class="role">مطورة C++ و Python</span>
+      <ul class="team-details">
+        <li>طالبة هندسة حاسب، جامعة الطائف</li>
+        <li>تحليل البيانات وعضو فعال في IEEE</li>
+        <li>مبادرات تقنية مثل NewTech</li>
+      </ul>
+    </div>
+
+    <!-- بطاقة سعد -->
+    <div class="swiper-slide team-card">
+      <h4>سعد رضوان سعد الثنيان</h4>
+      <span class="role">مطور أنظمة وUX</span>
+      <ul class="team-details">
+        <li>باحث في علوم الحاسب</li>
+        <li>تطوير تطبيقات مثل Kashkhtak و Weel Point</li>
+        <li>متمكن في تصميم واجهات المستخدم وUX</li>
+        <li>يجيد العربية والإنجليزية</li>
+      </ul>
+    </div>
+
+    <!-- بطاقة مضاوي -->
+    <div class="swiper-slide team-card">
+      <h4>مضاوي السرح</h4>
+      <span class="role">مطورة شبكات وأنظمة</span>
+      <ul class="team-details">
+        <li>طالبة علوم حاسب</li>
+        <li>مجيدة في تطبيقات Java وتصميم واجهات وتطوير المحتوى</li>
+        <li>شاركت في مسابقات جامعية وحصلت على شهادات تقدير</li>
+      </ul>
+    </div>
+
+    </div>
+
+    <!-- أسهم التحكم -->
+    <div class="swiper-button-next"></div>
+    <div class="swiper-button-prev"></div>
+  </div>
+</div>
+
+  </div>
+</section>
+
+
+
+<!-- SERVICES (with strengths + workflow inside) -->
+<section id="services" class="services-section">
+  <div class="container">
+    <h2 class="services-title">خدماتنا</h2>
+    
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-icon"><i class="fa-solid fa-desktop"></i></div>
+        <h3 class="service-title">تطوير البرمجيات</h3>
+        <ul class="service-list">
+          <li>تصميم وتطوير المواقع (Web Development)</li>
+          <li>تطوير تطبيقات الهواتف الذكية (iOS & Android)</li>
+          <li>بناء أنظمة مخصصة للشركات (ERP – CRM)</li>
+        </ul>
+      </div>
+      
+      <div class="service-card">
+        <div class="service-icon"><i class="fa-solid fa-globe"></i></div>
+        <h3 class="service-title">الحلول الإلكترونية</h3>
+        <ul class="service-list">
+          <li>منصات تجارة إلكترونية (B2B – B2C)</li>
+          <li>أنظمة الدفع الإلكتروني والربط مع بوابات الدفع</li>
+          <li>أنظمة إدارة المحتوى (CMS)</li>
+        </ul>
+      </div>
+      
+      <div class="service-card">
+        <div class="service-icon"><i class="fa-solid fa-shield-halved"></i></div>
+        <h3 class="service-title">الأمن السيبراني</h3>
+        <ul class="service-list">
+          <li>اختبار الاختراق (Penetration Testing)</li>
+          <li>الاستشارات الأمنية وحلول الحماية</li>
+          <li>تدريب وتوعية الموظفين على أمن المعلومات</li>
+        </ul>
+      </div>
+      
+      <div class="service-card">
+        <div class="service-icon"><i class="fa-solid fa-chart-simple"></i></div>
+        <h3 class="service-title">الدعم التقني والتحليلات</h3>
+        <ul class="service-list">
+          <li>دعم وصيانة مستمرة للأنظمة</li>
+          <li>إعداد تقارير ولوحات تحكم ذكية</li>
+          <li>تحسين الأداء وتجربة المستخدم (UX Optimization)</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Strengths INSIDE services -->
+    <div class="strengths-section strengths-in-services">
+      <div class="strengths-card">
+        <h2 class="strengths-title">نقاط قوتنا</h2>
+        <div class="strengths-grid">
+          <div class="strength-item">
+            <i class="fa-solid fa-users"></i>
+            <p>فريق متخصص بخبرات متعددة المجالات</p>
+          </div>
+          <div class="strength-item">
+            <i class="fa-solid fa-bolt"></i>
+            <p>سرعة في الإنجاز مع الالتزام بالجودة</p>
+          </div>
+          <div class="strength-item">
+            <i class="fa-solid fa-headset"></i>
+            <p>دعم فني متواصل بعد التسليم</p>
+          </div>
+          <div class="strength-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <p>حلول قابلة للتوسع والتطوير المستقبلي</p>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- Meter -->
-      <div class="bar-row">
-        <div class="bar"><span id="meterFill" style="width:12%"></span></div>
-        <div class="pill">
-          <span style="display:inline-block;width:6px;height:6px;border-radius:999px;background:var(--red)"></span>
-          <span id="meterLabel" data-en="Weak" data-ar="ضعيف">Weak</span>
+    <!-- Workflow INSIDE services -->
+    <div class="workflow-section workflow-in-services">
+      <h2 class="section-title">آلية عملنا</h2>
+      <div class="workflow-timeline-horizontal">
+        <div class="step">
+          <div class="step-circle">1</div>
+          <div class="step-text">
+            <div class="step-title">الاستشارة والتحليل</div>
+            <div class="step-description">فهم احتياجات العميل بدقة</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-circle">2</div>
+          <div class="step-text">
+            <div class="step-title">التصميم والتطوير</div>
+            <div class="step-description">تحويل المتطلبات إلى حلول عملية</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-circle">3</div>
+          <div class="step-text">
+            <div class="step-title">الاختبار والجودة</div>
+            <div class="step-description">ضمان خلو الأنظمة من الأخطاء</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-circle">4</div>
+          <div class="step-text">
+            <div class="step-title">التسليم والدعم</div>
+            <div class="step-description">تسليم المنتج مع دعم ما بعد الإطلاق</div>
+          </div>
         </div>
       </div>
+    </div>
 
-      <!-- Score line (Arabic-safe) -->
-      <div class="score">
-        <span id="scoreLabel" data-en="Score:" data-ar="النقاط:">Score:</span>
-        <span id="score">0</span>/100
+  </div>
+</section>
+
+  <section id="projects" class="projects-section">
+  <div class="container">
+    <h2 class="projects-title">المشاريع: </h2>
+    <div class="loading">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    </div>
+      <div class="loading-text">أفكار غير تقليدية ومشاريع رهيبة في الطريق… ترقبوا!</div>
+  </div>
+</section>
+
+
+
+
+
+  <!-- conclusion -->
+<section id="conclusion" class="conclusion-section">
+  <div class="container">
+    <div class="hero-card conclusion-card">
+      <h2 class="hero-title conclusion-title">
+        بيرق سايبر: شركاؤك في رحلة التحول الرقمي
+      </h2>
+      <p class="hero-sub conclusion-text">
+        فريق بيرق سايبر هو أكثر من مجرد مزود خدمات تقنية: نحن شركاء في النجاح. ندمج بين الخبرة التقنية العميقة، الرؤية الاستراتيجية، والالتزام الراسخ لبناء ثقة مستدامة. سواء كنت فرداً يسعى لتوسيع معرفته، أو مؤسسة تحتاج إلى حماية وجودها الرقمي، فإن بيرق سايبر هو خيارك الأمثل لقيادة رحلتك. معاً نحمي المستقبل. معاً سنبني الثقة.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- <section id="contact" class="contact-section">
+  <div class="container">
+    <h2 class="contact-title">تواصل معنا</h2>
+    <div class="contact-cards">
+
+    
+      <a href="mailto:bayraqcyber@gmail.com" class="contact-card">
+        <div class="icon">📧</div>
+        <div class="contact-info">
+          <p class="contact-type">البريد الإلكتروني</p>
+          <p class="contact-detail">bayraqcyber@gmail.com</p>
+        </div>
+      </a>
+
+
+      <a href="https://www.linkedin.com/company/%D8%A8%D9%8A%D8%B1%D9%82-%D8%B3%D8%A7%D9%8A%D8%A8%D8%B1-bayraq-cyber-%E2%9C%A8/
+" class="contact-card" target="_blank">
+        <div class="icon">🔗</div>
+        <div class="contact-info">
+          <p class="contact-type">LinkedIn</p>
+          <p class="contact-detail">Bayraq Cyber</p>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</section> -->
+
+
+<!-- CONTACT -->
+<!-- CONTACT -->
+<section id="contact" class="conclusion-section">
+  <div class="container">
+    <div class="hero-card conclusion-card contact-box">
+      <h2 class="hero-title conclusion-title">تواصل معنا</h2>
+
+      <div class="contact-links" dir="rtl">
+        <!-- Email -->
+        <a href="mailto:bayraqcyber@gmail.com" class="contact-link" aria-label="راسلنا بالبريد">
+          <i class="fa-solid fa-envelope"></i>
+          <span>
+            <strong>البريد الإلكتروني</strong>
+            <small class="ltr">bayraqcyber@gmail.com</small>
+          </span>
+        </a>
+
+        <!-- LinkedIn -->
+        <a href="https://www.linkedin.com/company/%D8%A8%D9%8A%D8%B1%D9%82-%D8%B3%D8%A7%D9%8A%D8%A8%D8%B1-bayraq-cyber-%E2%9C%A8/" target="_blank" rel="noopener" class="contact-link" aria-label="تابعنا على لينكدإن">
+          <i class="fa-brands fa-linkedin"></i>
+          <span>
+            <strong>LinkedIn</strong>
+            <small>Bayraq Cyber</small>
+          </span>
+        </a>
+
+        <!-- GitHub -->
+        <a href="" target="_blank" rel="noopener" class="contact-link" aria-label="تابعنا على GitHub">
+          <i class="fa-brands fa-github"></i>
+          <span>
+            <strong>GitHub</strong>
+            <small>قريبا...</small>
+          </span>
+        </a>
       </div>
+    </div>
+  </div>
+</section>
 
-      <!-- Points -->
-      <div class="points">
-        <h3 class="points-title ok"><span class="dot">${check()}</span><span data-en="Strengths:" data-ar="نقاط القوة:">Strengths:</span></h3>
-        <ul class="points-list ok">
-          <li><span class="li-icon">${check()}</span><span data-en="Enter a password to check its strength" data-ar="ادخل كلمة المرور لاختبار قوتها">Enter a password to check its strength</span></li>
-          <li><span class="li-icon">${check()}</span><span data-en="Use at least 12 characters" data-ar="استخدم 12 حرفًا على الأقل">Use at least 12 characters</span></li>
-          <li><span class="li-icon">${check()}</span><span data-en="Include letters, numbers, and symbols" data-ar="أضف أحرفًا وأرقامًا ورموزًا">Include letters, numbers, and symbols</span></li>
+
+
+<section id="faq" class="faq-section">
+  <div class="container">
+    <h2 class="section-title">الأسئلة الشائعة عن فريقنا</h2>
+
+    <div class="faq-item">
+      <div class="faq-question">من هم أعضاء فريق بيرق؟</div>
+      <div class="faq-answer">
+        فريق بيرق سايبر يتكون من مطورين، خبراء أمن سيبراني، محللي بيانات، ومختصين في الذكاء الاصطناعي، مع خبرات متنوعة في الجامعات والمشاريع التقنية.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question">ما الخدمات التي نقدمها؟</div>
+      <div class="faq-answer">
+        <ul style="padding-left: 20px; list-style-type: disc;">
+          <li><strong>الأمن السيبراني:</strong> تقييم الثغرات الأمنية، اختبار الاختراق، والحماية من الهجمات.</li>
+          <li><strong>حلول الذكاء الاصطناعي (AI):</strong> تطوير أنظمة مخصصة حسب حاجة العميل، أتمتة العمليات وتحليل البيانات.</li>
+          <li><strong>البرمجيات المخصصة:</strong> تصميم تطبيقات ومواقع إلكترونية حسب احتياجات العميل.</li>
+          <li><strong>التعليم والتدريب:</strong> ورش عمل ودورات تدريبية في البرمجة، الأمن السيبراني، والذكاء الاصطناعي.</li>
         </ul>
-
-        <h3 class="points-title warn"><span class="dot">${warn()}</span><span data-en="Improvements:" data-ar="نقاط التحسين:">Improvements:</span></h3>
-        <ul class="points-list warn">
-          <li><span class="li-icon">${warn()}</span><span data-en="Start typing to see strength analysis" data-ar="ابدأ الكتابة لرؤية تحليل القوة">Start typing to see strength analysis</span></li>
-          <li><span class="li-icon">${warn()}</span><span data-en="Avoid common words and keyboard patterns" data-ar="تجنب الكلمات الشائعة وأنماط لوحة المفاتيح">Avoid common words and keyboard patterns</span></li>
-          <li><span class="li-icon">${warn()}</span><span data-en="Don’t reuse passwords across accounts" data-ar="لا تعيد استخدام كلمات المرور عبر الحسابات">Don’t reuse passwords across accounts</span></li>
-        </ul>
       </div>
+    </div>
 
-      <div class="cta-row">
-        <div class="muted" data-en="Need a Strong Password?" data-ar="تحتاج كلمة مرور قوية؟">Need a Strong Password?</div>
-        <button class="btn" data-en="Generate" data-ar="إنشاء">${keyIcon()} Generate</button>
-      </div>
-    </section>
+    <div class="faq-item">
+      <div class="faq-question">هل يمكننا التواصل مع الفريق؟</div>
+     <div class="faq-answer">
+      نعم، يمكنكم التواصل معنا عبر البريد الإلكتروني أو LinkedIn من خلال قسم 
+      <a href="#contact" class="faq-contact-link">تواصل معنا</a>.
+    </div>
 
-    <!-- Tips -->
-    <section class="card tips" id="tipsCard">
-      <div class="sec-title">
-        <span class="shield">${shield()}</span>
-        <span data-en="Cybersecurity Tips" data-ar="نصائح الأمن السيبراني">Cybersecurity Tips</span>
-      </div>
+    </div>
 
-      <div class="tip-card tip-grid">
-        <div class="tip-icon" id="tipIcon">${lockIcon()}</div>
-        <div class="tip-head">
-          <div class="tip-title" id="tipTitle" data-en="Unique Passwords" data-ar="كلمات مرور فريدة">Unique Passwords</div>
-          <div class="tip-type" id="tipType" data-en="PASSWORD SECURITY" data-ar="أمن كلمة المرور">PASSWORD SECURITY</div>
-        </div>
-        <div class="tip-desc muted" id="tipDesc" data-en="Avoid using the same password across multiple accounts. Each account should have its own unique, strong password."
-             data-ar="تجنب استخدام نفس كلمة المرور في حسابات متعددة. يجب أن يكون لكل حساب كلمة مرور قوية وفريدة.">
-          Avoid using the same password across multiple accounts. Each account should have its own unique, strong password.
-        </div>
-      </div>
+  </div>
+</section>
 
-      <div class="tips-navigation"></div>
+<footer class="site-footer">
+  <div class="container">
+    <p>© 2025 بيرق سايبر. جميع الحقوق محفوظة.</p>
+  </div>
+</footer>
 
-      <div class="progress">
-        <div id="tipCounter" data-en="Tip 1 of 8" data-ar="النصيحة 1 من 8">Tip 1 of 8</div>
-        <div data-en="Auto-rotating" data-ar="تدوير تلقائي">Auto-rotating</div>
-        <div class="progressbar"><span id="tipProgress"></span></div>
-        <div class="tip-dots" id="tipDots" aria-hidden="true"></div>
-      </div>
-    </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-      <div data-en="Built to help you stay secure online" data-ar="تم إنشاؤه لمساعدتك على البقاء آمنًا على الإنترنت">Built to help you stay secure online</div>
-      <div class="mini" data-en="Your passwords are processed locally - nothing is sent to our servers" data-ar="يتم معالجة كلمات المرور محليًا - لا يتم إرسال أي شيء إلى خوادمنا">
-        ${lockIcon()} Your passwords are processed locally - nothing is sent to our servers
-      </div>
-    </footer>
-  </main>
 
-  <script src="app.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
