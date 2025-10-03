@@ -16,7 +16,6 @@ const icons = {
   cloud:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 18h10a4 4 0 0 0 0-8 6 6 0 0 0-11.3-1.9A4.5 4.5 0 0 0 7 18z" stroke="currentColor" stroke-width="1.6" fill="none"/></svg>`
 };
 
-/* Replace ${fn()} placeholders with SVGs */
 function replaceTokens(){
   document.body.innerHTML = document.body.innerHTML
     .replaceAll('${shield()}', icons.shield)
@@ -85,15 +84,12 @@ document.addEventListener("click", (e) => {
       lang = "ar";
     }
 
-    // swap texts
     document.querySelectorAll("[data-en][data-ar]").forEach(el => {
       el.textContent = el.dataset[lang];
     });
-    // swap placeholders
     document.querySelectorAll("input[data-en][data-ar]").forEach(inp => {
       inp.placeholder = inp.dataset[lang];
     });
-    // score label
     const scoreLabel = document.getElementById('scoreLabel');
     if (scoreLabel) scoreLabel.textContent = scoreLabel.dataset[lang];
 
@@ -128,7 +124,7 @@ function liHTMLWarn(text){ return `<li><span class="li-icon" style="color:var(--
 
 function setMeterClasses(level){
   const fill = meterFill();
-  const pillEl = meterLabel()?.parentElement; // .pill
+  const pillEl = meterLabel()?.parentElement; 
   if(!fill || !pillEl) return;
 
   fill.classList.remove('meter--weak','meter--fair','meter--good','meter--strong');
@@ -171,39 +167,27 @@ function resetStrengthUI(){
   }
 }
 
-/* ===== Common password detection (policy-compliant) =====
-   References:
-   - NordPass corporate/common lists (methodology + corp section)
-   - TechRadar summary showing policy-compliant industry examples like "P@ssw0rd", "Ramada@123", "Reservations2021!"
-   These formats appear frequently in breaches (season+year+symbol, Welcome/Admin/Qwerty + digits + symbol, etc.).
-*/
 
-/* A seed of known, cited examples that already meet complexity */
 const COMMON_COMPLEX_EXACT = new Set([
-  'p@ssw0rd',          // TechRadar / industry reporting
-  'p@ssw0rd!',         // variant
-  'password1!',        // policy-compliant variant seen widely
-  'welcome1!',         // common default-style
-  'welcome@123',       // industry style
-  'admin@123',         // industry style
-  'qwerty123!',        // industry style
-  'ramada@123',        // TechRadar (hospitality industry examples)
-  'reservations2021!'  // TechRadar article example (corrected spelling of the concept)
+  'p@ssw0rd',          
+  'p@ssw0rd!',        
+  'password1!',        
+  'welcome1!',        
+  'welcome@123',      
+  'admin@123',         
+  'qwerty123!',        
+  'ramada@123',        
+  'reservations2021!'  
 ].map(s => s.toLowerCase()));
 
-/* Regex patterns for top “policy-compliant” formats frequently seen in corp environments */
 const COMMON_COMPLEX_PATTERNS = [
-  // Season + year + symbol (e.g., Spring2025!)
   /^(spring|summer|autumn|fall|winter)(19|20)\d{2}[!@#?$%]$/i,
-  // Month + year + optional symbol (e.g., Oct2024!, March2025!)
   /^(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)(19|20)\d{2}[!@#?$%]?$/i,
-  // Word + digits + symbol (classic policy “pass+digit+special” variants)
   /^password\d{1,4}[!@#?$%]$/i,
   /^welcome\d{1,4}([!@#?$%]|@123)?$/i,
   /^admin\d{0,4}([!@#?$%]|@123)?$/i,
   /^qwerty\d{1,4}[!@#?$%]?$/i,
-  // Company/user defaults
-  /^[a-z]{3,12}[@!]123$/i,         // e.g., Company@123, User!123
+  /^[a-z]{3,12}[@!]123$/i,         
   /^(changeme|changeit)[@!]?\d{0,4}$/i,
   /^temp[@!]?\d{1,4}$/i,
   /^default[@!]?\d{0,4}$/i
@@ -212,10 +196,10 @@ const COMMON_COMPLEX_PATTERNS = [
 function normalizePwd(s){
   return (s || '')
     .toLowerCase()
-    .replace(/[@]/g,'@') // keep '@' (used in patterns)
+    .replace(/[@]/g,'@') 
     .replace(/[0]/g,'0')
-    .replace(/[1!|]/g,'1') // for quick normalization checks (we still rely on regex above)
-    .replace(/[^a-z0-9@!#?$%]/g, ''); // strip odd chars but keep typical specials
+    .replace(/[1!|]/g,'1') 
+    .replace(/[^a-z0-9@!#?$%]/g, ''); 
 }
 
 function isCommonPolicyCompliant(pwd){
@@ -228,7 +212,6 @@ function isCommonPolicyCompliant(pwd){
 function evaluatePassword(pwd){
   const lang = document.body.dir === 'rtl' ? 'ar' : 'en';
 
-  // empty/space-only => reset + warn
   if (!pwd || pwd.trim() === '') {
     resetStrengthUI();
     const input = document.querySelector("#pwd");
@@ -242,7 +225,6 @@ function evaluatePassword(pwd){
     return;
   }
 
-  // spaces not allowed inside
   if (/\s/.test(pwd)) {
     if (improveUL()) {
       const msg = lang === 'ar' 
@@ -261,23 +243,19 @@ function evaluatePassword(pwd){
 
   const passed = results.filter(r => r.ok).length;
 
-  // Detect “common but policy-compliant” passwords
   const commonComplex = isCommonPolicyCompliant(pwd);
 
-  // Score: base on rules, but cap if commonComplex
   let pct = Math.round((passed / rules.length) * 100);
   if (commonComplex) pct = Math.min(pct, 60); // never allow 100
 
   if (meterFill()) meterFill().style.width = `${pct}%`;
 
-  // Label & class
   let label = lang === 'ar' ? 'ضعيف' : 'Weak';
   let level = 'weak';
   if (passed === 2){ label = lang === 'ar' ? 'متوسط' : 'Fair'; level = 'fair'; }
   if (passed >= 3){ label = lang === 'ar' ? 'قوي' : 'Strong'; level = 'strong'; }
   if (commonComplex){
     label = lang === 'ar' ? 'شائعة وفق السياسة' : 'Common (Policy-Compliant)';
-    // keep level at least 'fair' visually to reflect complexity, but not green-strong
     level = (passed >= 3) ? 'fair' : 'weak';
   }
   if (meterLabel()) meterLabel().textContent = label;
@@ -324,7 +302,6 @@ function generatePassword(length = 16) {
   const all = lower + upper + numbers + symbols;
 
   let pwd = '';
-  // ensure at least one of each
   pwd += upper[Math.floor(Math.random() * upper.length)];
   pwd += numbers[Math.floor(Math.random() * numbers.length)];
   pwd += symbols[Math.floor(Math.random() * symbols.length)];
@@ -390,7 +367,6 @@ const tips = [
    desc_ar:"احتفظ بنسخ مشفرة من الملفات الهامة لتتمكن من الاستعادة في حالة الفقد أو هجمات الفدية."}
 ];
 
-/* helper to get SVG icon */
 function getIcon(name) { return icons[name] || ''; }
 
 /* Tips rotation + dots */
@@ -418,8 +394,8 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
   let currentTip = 0;
   let progress = 0;
-  const duration = 15;  // seconds per tip
-  const interval = 100; // ms
+  const duration = 15;
+  const interval = 100;
   let rotationInterval;
 
   function startRotation() {
@@ -474,6 +450,5 @@ document.addEventListener('DOMContentLoaded', ()=>{
   showTip(currentTip);
   startRotation();
 
-  // initial reset for strength UI (if input empty)
   resetStrengthUI();
 });
